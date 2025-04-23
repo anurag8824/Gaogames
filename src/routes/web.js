@@ -343,7 +343,7 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
 
 
    router.use('/aviator',middlewareController,homeController.gamePage);
-   router.use('/dragon',middlewareController,dragonController.userDekh);
+  //  router.use('/dragon',middlewareController,dragonController.userDekh);
 
 
 

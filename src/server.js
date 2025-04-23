@@ -24,7 +24,7 @@ const Dragon = require('./controllers/dragonController');
 
 // --- Constants ---
 const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key'; // Use the same secret as in login controller
-const port = process.env.PORT || 7777; // Use environment variable or default
+const port = process.env.PORT || 3000; // Use environment variable or default
 
 // --- App & Server Initialization ---
 const app = express();
@@ -98,8 +98,8 @@ socketHandler(io);
 // These likely handle different events or namespaces
 socketIoController.sendMessageAdmin(io); // Handles admin messages?
 aviatorController.Aviator(io);         // Handles Aviator game logic?
-Dragon.Dragon(io);
-Dragon.userDekh(io);
+// Dragon.Dragon(io);
+// Dragon.userDekh(io);
 
 // --- Cron Jobs ---
 // Cron jobs operate independently but might use 'io' to emit updates
