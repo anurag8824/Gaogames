@@ -92,7 +92,7 @@
 }
 
 .register__container-remember[data-v-23d378a6] .van-checkbox .van-checkbox__label span {
-    color: #4781ff;
+    color: #ffba00;
     font-size: .32rem
 }
 
@@ -117,12 +117,12 @@
     font-size: .48rem;
     font-weight: 700;
     letter-spacing: .05333rem;
-    text-shadow: 0 .05333rem .02667rem #4781ff;
+    text-shadow: 0 .05333rem .02667rem #ffba00;
     border-radius: 1.06667rem;
     border: none;
-    background: -webkit-linear-gradient(177.63deg,#477bff 1.68%,#2b97ff 95.19%);
-    background: linear-gradient(272.37deg,#477bff 1.68%,#2b97ff 95.19%);
-    box-shadow: 0 .05333rem #4781ff;
+    background: -webkit-linear-gradient(177.63deg,#ffba00  1.68%,#f49015 95.19%);
+    background: linear-gradient(272.37deg,#ffba00 1.68%,#f49015 95.19%);
+    box-shadow: 0 .05333rem #ffba00;
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
@@ -162,7 +162,7 @@
 
 .register__container-button .loginin[data-v-23d378a6] {
    font-size: .4rem;
-    color: #4781ff;
+    color: #ffba00;;
     font-weight: 700;
     margin-left: .22667rem
 }
@@ -521,7 +521,7 @@
 }
 
 .resgister__C .login_container-tab .active .font30[data-v-7e82aefe] {
-    color: #4781ff
+    color: #ffba00;
 }
 
 .resgister__C .login_container-tab .basicimg[data-v-7e82aefe],.resgister__C .login_container-tab .phoneactive[data-v-7e82aefe],.resgister__C .login_container-tab .emailactive[data-v-7e82aefe],.resgister__C .login_container-tab .emialbg[data-v-7e82aefe],.resgister__C .login_container-tab .phonebg[data-v-7e82aefe] {

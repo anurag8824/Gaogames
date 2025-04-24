@@ -6,9 +6,27 @@ const connection = require("../config/connectDB");
 
 const homePage = async (req, res) => {
     let [setting] = await connection.query('SELECT `app`,`telegram` FROM admin');
+    let auth = req?.cookies?.auth;
+    const [user] = await connection.query('SELECT `win_wallet` FROM users WHERE `token` = ? ', [auth]);
     let app = setting[0].app;
     let telegram = setting[0].telegram;
-    return res.render("home/index.ejs", { app,telegram});
+    console.log(auth,user[0],"guhijoptfyguhij")
+    if(!auth){
+        let money = false;
+
+        return res.render("home/index.ejs", { app,telegram,money});
+
+    }
+    else{
+        
+        const [user] = await connection.query('SELECT `win_wallet`, `name_user`,`ekyc` FROM users WHERE `token` = ? ', [auth]);        let money = user[0].win_wallet
+        let username = user[0].name_user
+        let ekyc = user[0].ekyc
+        // console.log
+        // let money =10000;
+        return res.render("home/index.ejs", { app,telegram,money,username,ekyc});
+
+    }
 }
 
 const checkInPage = async (req, res) => {

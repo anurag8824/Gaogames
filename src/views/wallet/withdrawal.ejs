@@ -7589,13 +7589,13 @@
                         </div>
                     </div>
                 </div>
-                <div data-v-25d9c352="" class="requiredBox m-t-20">
+                <!-- <div data-v-25d9c352="" class="requiredBox m-t-20">
                     <div data-v-25d9c352="" class="box c-row c-row-between c-row-middle p-l-10">
                         <img data-v-25d9c352="" height="13px" width="25px" src="/images/king (3).png">
                         <input data-v-d8986e5e="" data-v-25d9c352="" placeholder="Enter Password"
                             οnkeyup="value=value.replace(/[^\w\.\/]/ig,'')" class="pw-input input">
                     </div>
-                </div>
+                </div> -->
                 <div data-v-25d9c352="" class="c-row c-row-center m-t-30 p-b-30 withdrawal-btn"><button
                         data-v-25d9c352=""
                         class="btn van-button van-button--default van-button--normal van-button--block van-button--round"
@@ -7704,14 +7704,14 @@
         $('button').click(function (e) {
             e.preventDefault();
             let money = $('input:eq(0)').val().trim();
-            let password = $('input:eq(1)').val().trim();
-            if (money && password && money >= 110) {
+            // let password = $('input:eq(1)').val().trim();
+            if (money) {
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/withdrawal",
                     data: {
                         money: money,
-                        password: password,
+                        // password: password,
                     },
                     dataType: "json",
                     success: function (response) {
@@ -7747,7 +7747,7 @@
     });
                     }
                 });
-            } else if (!money || !password) {
+            } else if (!money) {
                 $(this).addClass('block-click');
                 alertMess('Please enter complete information', $(this));
             } else {

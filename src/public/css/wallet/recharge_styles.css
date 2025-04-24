@@ -324,8 +324,8 @@ body {
 }
 
 .mian .selectBox .pay-box .list .item.action[data-v-67caa467] {
-    background: -webkit-linear-gradient(right, #1989fa 0%, #27bd82 100%);
-    background: linear-gradient(270deg, #1989fa 0%, #00f3e0 100%);
+    background: -webkit-linear-gradient(right, #f9a200  0%, #f9a400 100%);
+    background: linear-gradient(270deg, #f9a200  0%, #f9a400 100%);
     position: relative
 }
 
@@ -353,7 +353,7 @@ body {
     padding: .26667rem;
     text-align: center;
     width: 30%;
-    background: linear-gradient(180deg, #4781ff 0%, #4781ff 100%);
+    background: linear-gradient(180deg, #f9a200 0%, #f9a400 100%);
     box-shadow: 0 .18667rem .50667rem 0 rgba(143, 139, 139, .11);
     margin-right: .26667rem;
     height: 1.06667rem;
@@ -3012,7 +3012,7 @@ ul {
      color: #fff; 
     font-size: .37333rem;
     line-height: .64rem;
-    background-color: #1989fa; 
+    background-color:#f9a200; 
 }
 
 .van-cell:after {
@@ -4333,8 +4333,8 @@ ul {
 .van-button--default {
     border: none;
     color: #4781ff;
-    background: -webkit-linear-gradient(top, #4781ff 0%, #4781ff 100%);
-    background: linear-gradient(180deg, #9ff3f2 0%, #00d5f3 100%)
+    background: -webkit-linear-gradient(top, #f9a200 0%, #d58c03 100%);
+    background: linear-gradient(180deg, #f9a200 0%, #d58c03 100%)
 }
 
 .van-button--primary {

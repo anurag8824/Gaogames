@@ -1128,8 +1128,8 @@ const infoUserBank = async (req, res) => {
 const withdrawal3 = async (req, res) => {
    let auth = req.cookies.auth
    let money = req.body.money
-   let password = req.body.password
-   if (!auth || !money || !password || money < 110) {
+   // let password = req.body.password
+   if (!auth || !money || money < 0) {
       return res.status(200).json({
          message: "Failed",
          status: false,
@@ -1138,7 +1138,7 @@ const withdrawal3 = async (req, res) => {
    }
 
    console.log(auth,money,"hello world i am here")
-   const [user] = await connection.query("SELECT `phone`, `code`,`invite`, `money`,win_wallet FROM users WHERE `token` = ? AND password = ?", [auth, md5(password)])
+   const [user] = await connection.query("SELECT `phone`, `code`,`invite`, `money`,win_wallet FROM users WHERE `token` = ?", [auth])
 
    // if (user.length == 0) {
    //    return res.status(200).json({

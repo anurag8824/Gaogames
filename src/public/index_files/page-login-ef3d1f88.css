@@ -905,20 +905,21 @@
 }
 
 .signIn__container-button .active[data-v-0ce8d964] {
-    box-shadow: 0 .05333rem .02667rem #2666f280;
-    background: -webkit-linear-gradient(top,#759aff 0%,#487cff 100%);
-    background: linear-gradient(180deg,#759aff 0%,#487cff 100%);
-    box-shadow: 0 .05333rem #2666f2
+    box-shadow: 0 .05333rem .02667rem #ffba00;
+    background: -webkit-linear-gradient(top,#ffba00 0%,#f49015 100%);
+    background: linear-gradient(180deg,#ffba00 0%,#f49015 100%);
+    box-shadow: 0 .05333rem #ffba00
+  
 }
 
 .signIn__container-button .active:active[data-v-0ce8d964] {
      width: 7.73333rem;
     height: 1.06667rem;
-    color: #4781ff;
+    color: #ffba00;
     font-size: .48rem;
     background: #f7f8ff;
     border-radius: 1.06667rem;
-    border: .01333rem solid #4781ff;
+    border: .01333rem solid #ffba00;
     box-shadow: none;
     text-shadow: none;
     margin-top: .53333rem
@@ -927,11 +928,11 @@
 .signIn__container-button .register[data-v-0ce8d964] {
      width: 7.73333rem;
     height: 1.06667rem;
-    color: #4781ff;
+    color: #ffba00;
     font-size: .48rem;
     background: #f7f8ff;
     border-radius: 1.06667rem;
-    border: .01333rem solid #4781ff;
+    border: .01333rem solid #ffba00;
     box-shadow: none;
     text-shadow: none;
     margin-top: .53333rem
@@ -1784,7 +1785,7 @@
 }
 
 .login__container .login_container-tab .active .font30[data-v-8752c961] {
-    color: #4781ff
+    color: #ffba00
 }
 
 .login__container .login_container-tab .basicimg[data-v-8752c961],.login__container .login_container-tab .phoneactive[data-v-8752c961],.login__container .login_container-tab .emailactive[data-v-8752c961],.login__container .login_container-tab .emialbg[data-v-8752c961],.login__container .login_container-tab .phonebg[data-v-8752c961] {

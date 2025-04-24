@@ -1382,9 +1382,9 @@ textarea {
 }
 
 .navbar__content[data-v-58c5e826] {
-   // background: linear-gradient(to right, #4781ff, #59adff);
+ background: linear-gradient(to right, #4781ff, #59adff);
     position: relative;
-    background: #4781ff;
+    background: #ffba00;
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
