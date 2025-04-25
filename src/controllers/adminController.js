@@ -626,11 +626,15 @@ const rechargeDuyet = async (req, res) => {
          invite: user.invite,
          id
       })
+       
 
-
-      if (info[0].money == 1499 && user.extra == 0) {
+      if (info[0].money == 1499 && user.extra === null) {
          console.log ("hello world haahaha")
-         await connection.query(`UPDATE users SET extra = true, ekyc = false WHERE phone = ?`, [user.phone]);
+         // await connection.query(`UPDATE users SET extra = true, ekyc = false WHERE phone = ?`, [user.phone]);
+         await connection.query(
+            "UPDATE users SET extra = ? WHERE phone = ? AND extra IS NULL",
+            [false, user.phone]
+          );
      }
 
      if (info[0].money == 699 && user.ekyc === 0) {
@@ -810,7 +814,18 @@ const handlWithdraw = async (req, res) => {
    }
    if (type == "confirm") {
       await connection.query(`UPDATE withdraw SET status = 1 WHERE id = ?`, [id])
+      
       const [info] = await connection.query(`SELECT * FROM withdraw WHERE id = ?`, [id])
+      const phone = info[0].phone;
+      const [userinfo] = await connection.query(`SELECT * FROM users WHERE phone = ?`, [phone])
+      let user = userinfo[0];
+      if(user.extra == 0 && user.ekyc == null){
+         await connection.query(
+            `UPDATE users SET ekyc = false WHERE phone = ? AND ekyc IS NULL`,
+            [user.phone]
+          );
+       }
+
       return res.status(200).json({
          message: "Successful application confirmation",
          status: true,

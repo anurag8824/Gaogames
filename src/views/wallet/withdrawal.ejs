@@ -67,14 +67,15 @@
         .mian .selectBox .colorBox[data-v-25d9c352] {
             height: 1.06667rem;
             width: 100%;
-            background-image: linear-gradient(90deg, #4781FF, #4781FF)
+            background-image: linear-gradient(90deg, #011a4f, #031c51)
         }
 
         .mian .selectBox .txtBox[data-v-25d9c352] {
     height: 3.46667rem;
-    background-image: url(/assets/png/TotalAssetsBg-613aa35e.png);
+    /* background-image: url(/assets/png/TotalAssetsBg-613aa35e.png); */
     background-repeat: no-repeat;
     background-size: 100%;
+    background:#01236e;
     
     border-radius: .26667rem;
     color: #fff;
@@ -196,21 +197,22 @@
             bottom: 0
         }
 
-        .mian .selectBox .tab .box ul li.item.action[data-v-25d9c352] {
+     .mian .selectBox .tab .box ul li.item.action[data-v-25d9c352] {
            width: 100%;
     height: 3.46667rem;
-    background-image: url(/assets/png/TotalAssetsBg-613aa35e.png);
+   
+    background: #f7ad02;
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: center;
     border-radius: .26667rem;
-    color: #fff;
+    color: #0c0a0a;
     padding: .38667rem .33333rem 0;
     position: relative
         }
 
         .mian .selectBox .tab .box ul li.item.action .size[data-v-25d9c352] {
-            color: #fff
+            color: #070340
         }
 
         .mian .selectBox .withd[data-v-25d9c352] {
@@ -274,7 +276,7 @@
         }
 
         .mian .selectBox .conBox .des[data-v-25d9c352] {
-            color: #b3b2c8;
+            color: #090909;
             font-size: .42667rem;
             margin-bottom: .4rem
         }
@@ -326,9 +328,9 @@
             -webkit-line-clamp: 1;
             height: .93333rem;
             padding: 0 .26667rem;
-            background: #fdf0ef;
+            background: #f7ad02;
             border-radius: .26667rem;
-            color: #4781FF;
+            color: #030915;
             font-weight: 600
         }
 
@@ -7505,6 +7507,72 @@
             padding-bottom: 0
         }
     </style>
+      <style>
+        /* CSS for the pop-up */
+        #withdrawal-popup {
+            display: none; /* Initially hidden */
+            position: fixed; /* Overlay the entire window */
+            z-index: 10; /* Sit on top of everything else */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scrolling if the content is too long */
+            /* background-color: rgba(0,0,0,0.5); Semi-transparent background */
+            margin-top:200px
+        }
+
+        #withdrawal-popup-content {
+            background-color: #fff; /* White background for the pop-up content */
+            margin: 10% auto; /* Center the pop-up vertically and horizontally */
+            padding: 20px;
+            border: 1px solid #888; /* Grey border */
+            width: 90%; /* Take up 90% of the viewport width */
+            max-width: 400px; /* But don't exceed 400px in width */
+            border-radius: 10px; /* Rounded corners */
+            position: relative; /* Needed for absolute positioning of the close button */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add a shadow for emphasis */
+        }
+
+        #close-popup {
+            position: absolute; /* Positioned relative to the pop-up content */
+            top: 8px;
+            right: 16px;
+            color: #aaa; /* Light grey color */
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer; /* Indicate that it's clickable */
+        }
+
+        #close-popup:hover,
+        #close-popup:focus {
+            color: #000; /* Darker color on hover/focus */
+            text-decoration: none; /* Remove underline */
+        }
+
+        #recharge-now {
+            background-color: #FFA500; /* Orange background */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #recharge-now:hover {
+            background-color: #FF8C00; /* Darker orange on hover */
+        }
+
+        /* #faq-link {
+            color: #0078d7; /* Blue color for the link */
+            text-decoration: none;
+        } */
+
+        #faq-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body style="font-size: 12px;">
@@ -7512,30 +7580,30 @@
         <div data-v-25d9c352="" class="mian">
             <div data-v-106b99c8="" data-v-25d9c352="" class="c-row navbar">
                 <div data-v-106b99c8="" class="navbar-left" onclick="location.href='/mian'">
-                    <div data-v-25d9c352="" data-v-106b99c8="" class="c-row c-row-middle-center">
+                    <!-- <div data-v-25d9c352="" data-v-106b99c8="" class="c-row c-row-middle-center">
                         <img data-v-25d9c352="" data-v-106b99c8="" src="/images/back.c3244ab0.png" class="navbar-back">
-                    </div>
+                    </div> -->
                 </div>
                 <div data-v-106b99c8="" class="navbar-title"> Withdraw Money</div>
                 <div data-v-106b99c8="" class="navbar-right"></div>
             </div>
             <div data-v-25d9c352="" class="selectBox p-b-20">
-                <div data-v-25d9c352="" class="colorBox"></div>
-                <div data-v-25d9c352="" class="txtBox">
+                <!-- <div data-v-25d9c352="" class="colorBox"></div> -->
+                <!-- <div data-v-25d9c352="" class="txtBox">
                     <div data-v-25d9c352="" class="c-row">
                         <div data-v-25d9c352="" class="txt"> Balance </div>
                         <div data-v-25d9c352="" class="c-row c-row-middle">
                             <div data-v-25d9c352="" class="money">
-                                <!---->
+                                
                                 <div data-v-25d9c352="">₹<span data-v-25d9c352="" class="p-l-10">Loading...</span></div>
-                                <!---->
+                                
                             </div>
                             <div data-v-25d9c352="" class="van-image img m-l-15" style="width: 26px; height: 26px;"><img
                                     src="/images/king (9).png" class="van-image__img"></div>
                         </div>
                     </div>
                     <div data-v-25d9c352="" class="icon"></div>
-                </div>
+                </div> -->
                 <div data-v-25d9c352="" class="tab m-t-10">
                     <div data-v-25d9c352="" class="box">
                         <ul data-v-25d9c352="" class="c-row c-flex-warp">
@@ -7582,7 +7650,7 @@
                                     onclick="location.href='/wallet/addBank'"><span data-v-25d9c352=""
                                         class="plus c-row c-row-middle-center"><i data-v-25d9c352=""
                                             class="van-icon van-icon-plus"
-                                            style="color: rgb(71, 129, 255); font-size: 14px;">
+                                            style="color: rgb(12, 13, 15); font-size: 14px;">
                                             <!---->
                                         </i></span> Add BankCard</div>
                             </div>
@@ -7599,11 +7667,10 @@
                 <div data-v-25d9c352="" class="c-row c-row-center m-t-30 p-b-30 withdrawal-btn"><button
                         data-v-25d9c352=""
                         class="btn van-button van-button--default van-button--normal van-button--block van-button--round"
-                        style="color: rgb(255, 255, 255); background: rgb(71, 129, 255); border-color: rgb(71, 129, 255);">
+                        style="color: rgb(255, 255, 255); background: rgb(245, 167, 11); border-color: rgb(240, 170, 6);">
                         <div data-v-25d9c352="" class="van-button__content"><span data-v-25d9c352=""
                                 class="van-button__text"> Withdraw Money </span></div>
                     </button></div>
-                <div data-v-1ab1044b="" class="c2cWithdraw__T"><div data-v-1ab1044b="" class="c2cWithdraw__T-h">Withdrawal instructions</div><div data-v-52ec6178="" data-v-1ab1044b="" class="Recharge__container-intro"><p data-v-52ec6178="">Use ARay to withdraw money and receive a bonus for each withdrawal;</p><p data-v-52ec6178="">Use ARay to withdraw cash and support UPI for quick payment;</p><p data-v-52ec6178="">Need to bet <span data-v-470caa86="" class="red">₹0.00</span> to be able to withdraw</p><p data-v-52ec6178="">Withdraw time <span data-v-52ec6178="" class="red">00:00-23:59</span></p><p data-v-52ec6178="">Inday Remaining Withdrawal Times<span data-v-52ec6178="" class="red">3</span></p><p data-v-52ec6178="">Withdrawal amount range <span data-v-52ec6178="" class="red">₹110.00-₹1,000,000.00</span></p><!----><!----><!----><!----></div></div>
                 </div>
             </div>
             <div data-v-7692a079="" data-v-25d9c352="" class="Loading c-row c-row-middle-center" style="display: none;">
@@ -7615,7 +7682,34 @@
                         </svg></span></div>
             </div>
         </div>
-    </div>
+        
+        <% if (extra === null) { %>
+            <div id="withdrawal-popup">
+                <div id="withdrawal-popup-content">
+                    <span id="close-popup">&times;</span>
+                    <h2>Withdrawal</h2>
+                    <p>FOR WITHDRWAL ACCESS DEPOSIT 1499 RUPEES ONE TIME.</p>
+                    <p>विड्रॉल करने के लिए एक बार अपने गेम खाते को 1499 रुपए से रिचार्ज करें ।</p>
+                    <button id="recharge-now" onclick="window.location.href ='/wallet/paynow/manual_upi?am=1499&extra=true'">RECHARGE NOW</button>
+                    </div>
+            </div>
+            <% } %>
+
+
+            <% if (ekyc == 0 || ekyc == false) { %>
+                <div id="withdrawal-popup">
+                    <div id="withdrawal-popup-content">
+                        <span id="close-popup">&times;</span>
+                        <h2>Withdrawal</h2>
+                        <p>FOR GETTING AMMOUNT IN YOUR BANK ACCESS DEPOSIT 699 RUPEES ONE TIME FOR E -KYC .</p>
+                        <p>विड्रॉल करने के लिए एक बार अपने गेम खाते को 669 रुपए से रिचार्ज करें ।</p>
+                        <button id="recharge-now" onclick="window.location.href ='/wallet/paynow/manual_upi?am=699&extra=false&ekyc=true'">RECHARGE NOW</button>
+                        </div>
+                </div>
+                <% } %>
+        
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/js/client.js"></script>
     <script>
@@ -7634,7 +7728,7 @@
                 let user = response.userInfo[0];
                 console.log(user.win_wallet,'first')
                 $('.money').text("₹" + user.money);
-                $('.winWallet').text(user.win_wallet);
+                $('.winWallet').text(user.win_wallet + user.money);
                 console.log(user);
                 $('.bankBox .box .item:eq(1) div:eq(1)').text(`2. Complete Bet ₹ ${response.result}`);
                 if (!response.datas[0]) return;
@@ -7665,14 +7759,14 @@
             const user = response.message;
             console.log(user,"user")
 
-            if (user && user.extra === 0) {
-                isExtra = false;
-                window.location.href = "/wallet/paynow/manual_upi?am=1499&extra=true";
-            } else if(user.ekyc ===0 && user.extra ===1) {
-                // isExtra = true; // or null if you prefer
-                window.location.href = "/wallet/paynow/manual_upi?am=699&ekyc=true";
+            // if (user && user.extra === 0) {
+            //     isExtra = false;
+            //     window.location.href = "/wallet/paynow/manual_upi?am=1499&extra=true";
+            // } else if(user.ekyc ===0 && user.extra ===1) {
+            //     // isExtra = true; // or null if you prefeç
+            //     window.location.href = "/wallet/paynow/manual_upi?am=699&ekyc=true";
 
-            }
+            // }
 
             console.log("isExtra:", isExtra);
 
@@ -7719,35 +7813,15 @@
                      if (response.status == true) {
                             $('.money').text("₹" + response.money + '.00');
                             $('.winWallet').text(response.win_wallet)
+                             window.location.href ="/home"
                         }
                         alertMess(response.message, $(this));
-                        let isExtra =null;
-        $.ajax({
-        type: "GET",
-        url: "/api/webapi/userme",
-        dataType: "json",
-        success: function (response) {
-            const user = response.message;
-            console.log(user,"user")
-
-            if (user && user.extra === 0) {
-                isExtra = false;
-                window.location.href = "/wallet/paynow/manual_upi?am=1499&extra=true";
-            } else {
-                isExtra = true; // or null if you prefer
-            }
-
-            console.log("isExtra:", isExtra);
-
-            // You can conditionally do something here based on isExtra
-        },
-        error: function (err) {
-            console.error("userme API error:", err);
-        }
-    });
+                       
                     }
-                });
-            } else if (!money) {
+                })
+            }
+            
+               else if (!money) {
                 $(this).addClass('block-click');
                 alertMess('Please enter complete information', $(this));
             } else {
@@ -7756,6 +7830,41 @@
             }
         });
     </script>
+    <script>
+        // JavaScript to show and close the pop-up
+        const withdrawalPopup = document.getElementById('withdrawal-popup');
+        const closePopup = document.getElementById('close-popup');
+        const rechargeNowButton = document.getElementById('recharge-now');
+        const faqLink = document.getElementById('faq-link');
+        
+        // Function to show the pop-up
+        function showWithdrawalPopup() {
+          withdrawalPopup.style.display = "block";
+        }
+        
+        // Function to hide the pop-up
+        function hideWithdrawalPopup() {
+          withdrawalPopup.style.display = "none";
+        }
+        
+        // Event listener for the close button
+        // closePopup.addEventListener('click', hideWithdrawalPopup);
+        
+        // Event listener for the recharge now button  (Add functionality as needed)
+        rechargeNowButton.addEventListener('click', function() {
+          //  Add your recharge logic here.
+          alert('Redirecting to recharge...'); 
+        });
+        
+        // Event listener for the FAQ link (Add functionality as needed)
+        // faqLink.addEventListener('click', function(event) {
+        //   event.preventDefault(); 
+        //   alert('Opening FAQ...'); 
+        // });
+        
+        // Show the pop-up when the page loads (You can change this trigger)
+        window.onload = showWithdrawalPopup;
+        </script>
 </body>
 
 </html>

@@ -7,7 +7,7 @@ const connection = require("../config/connectDB");
 const homePage = async (req, res) => {
     let [setting] = await connection.query('SELECT `app`,`telegram` FROM admin');
     let auth = req?.cookies?.auth;
-    const [user] = await connection.query('SELECT `win_wallet` FROM users WHERE `token` = ? ', [auth]);
+    const [user] = await connection.query('SELECT `win_wallet`,`money` FROM users WHERE `token` = ? ', [auth]);
     let app = setting[0].app;
     let telegram = setting[0].telegram;
     console.log(auth,user[0],"guhijoptfyguhij")
@@ -19,11 +19,13 @@ const homePage = async (req, res) => {
     }
     else{
         
-        const [user] = await connection.query('SELECT `win_wallet`, `name_user`,`ekyc` FROM users WHERE `token` = ? ', [auth]);        let money = user[0].win_wallet
-        let username = user[0].name_user
-        let ekyc = user[0].ekyc
-        // console.log
-        // let money =10000;
+        const [user] = await connection.query('SELECT `win_wallet`,`money`, `name_user`,`ekyc` FROM users WHERE `token` = ? ', [auth]); 
+        console.log(user[0],"username hahahahhahahahahhah")     
+         let money = Number(user[0]?.win_wallet || 0)  +  Number(user[0]?.money || 0);
+
+        let username = user[0]?.name_user
+        let ekyc = user[0]?.ekyc
+      
         return res.render("home/index.ejs", { app,telegram,money,username,ekyc});
 
     }
@@ -137,7 +139,11 @@ const rechargerecordPage = async (req, res) => {
 }
 
 const withdrawalPage = async (req, res) => {
-    return res.render("wallet/withdrawal.ejs");
+    const auth = req.cookies.auth;
+    const [user] = await connection.query('SELECT `extra`,`ekyc` FROM users WHERE `token` = ? ', [auth]);
+    let extra = user[0]?.extra;
+    let ekyc = user[0]?.ekyc;
+    return res.render("wallet/withdrawal.ejs",{ extra,ekyc});
 }
 
 const withdrawalrecordPage = async (req, res) => {
@@ -513,7 +519,7 @@ const [betHistory] = await connection.execute(
             currency: '₹',
             id: 12345,
         },
-        wallet: user[0].money+user[0].win_wallet,
+        wallet: user[0].money+user[0]?.win_wallet,
         settings: {
             minBetAmount: 10,
             maxBetAmount: 10000,

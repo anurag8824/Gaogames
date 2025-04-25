@@ -23,4 +23,12 @@ const connection = mysql.createPool({
     port: 3306
 });
 
+// const connection = mysql.createPool({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',  // XAMPP's default root password is blank
+//     database: 'gameavitor',
+//     port: 3306
+// });
+
 module.exports = connection;

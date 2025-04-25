@@ -1138,7 +1138,7 @@ const withdrawal3 = async (req, res) => {
    }
 
    console.log(auth,money,"hello world i am here")
-   const [user] = await connection.query("SELECT `phone`, `code`,`invite`, `money`,win_wallet FROM users WHERE `token` = ?", [auth])
+   const [user] = await connection.query("SELECT `phone`, `code`,`invite`, `money`,`extra`,`ekyc`,win_wallet FROM users WHERE `token` = ?", [auth])
 
    // if (user.length == 0) {
    //    return res.status(200).json({
@@ -1200,7 +1200,7 @@ const withdrawal3 = async (req, res) => {
    const [withdraw] = await connection.query("SELECT * FROM withdraw WHERE `phone` = ? AND today = ?", [userInfo.phone, checkTime])
    if (user_bank.length != 0) {
       if (withdraw.length < 3) {
-         if (userInfo.win_wallet - money >= 0) {
+         if (userInfo.win_wallet  - money >= 0) {
             // if (result == 0) {
             //    if (total - total2 >= 0) {
             //       if (result == 0) {
@@ -1229,10 +1229,13 @@ const withdrawal3 = async (req, res) => {
                   await connection.execute(sql, [id_time + "" + id_order, userInfo.phone, money, infoBank.stk, infoBank.name_bank, infoBank.email, infoBank.name_user, 0, checkTime, dates,infoBank.sdt,0])
                   await connection.query("UPDATE users SET win_wallet = win_wallet - ? WHERE phone = ? ", [money, userInfo.phone])
                   // await connection.query("UPDATE users SET extra WHERE phone",[false,userInfo.phone])
-                  await connection.query(
-                     "UPDATE users SET extra = ? WHERE phone = ? AND extra IS NULL",
-                     [false, userInfo.phone]
-                   );
+                  console.log(userInfo.extra,"ghjkl;")
+                  if(userInfo.extra == 0 && userInfo.ekyc == null){
+
+                     await connection.query(`UPDATE users SET ekyc = false WHERE phone = ?`, [userInfo.phone]);
+            
+                   }
+                 
                    
 
                   return res.status(200).json({
