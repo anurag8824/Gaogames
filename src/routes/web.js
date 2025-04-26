@@ -88,9 +88,9 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
 
    // page account
    router.get("/keFuMenu", accountController.keFuMenu)
-   router.get("/login", accountController.loginPage)
-   router.get("/register", accountController.registerPage)
-   router.get("/forgot", accountController.forgotPage)
+  //  router.get("/login", accountController.loginPage)
+  //  router.get("/register", accountController.registerPage)
+  //  router.get("/forgot", accountController.forgotPage)
    router.post("/api/sent/otp/verify", accountController.verifyCode)
    router.post("/api/sent/otp/verify/reset", accountController.verifyCodePass)
    router.post("/api/resetPasword", accountController.forGotPassword)
@@ -100,10 +100,12 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
       return res.redirect("/home")
    })
    router.get("/home", homeController.homePage)
+   router.get("/ad.php",homeController.ad)
    router.get("/promotion",homeController.promotionPage)
    router.get("/checkIn/reward",middlewareController,homeController.attendance);
 
    router.get("/checkIn", middlewareController, homeController.checkInPage)
+
    router.get("/checkDes", middlewareController, homeController.checkDes)
    router.get("/checkRecord", middlewareController, homeController.checkRecord)
    router.get("/wallet/transfer", middlewareController, homeController.transfer)
@@ -124,7 +126,7 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
 
 
    router.get("/wallet", middlewareController, homeController.walletPage)
-   router.get("/wallet/recharge", middlewareController, homeController.rechargePage)
+   router.get("/wallet/recharge", middlewareController, homeController.rechargePage,homeController.homePage)
    router.get("/wallet/withdrawal", middlewareController, homeController.withdrawalPage)
    router.get("/wallet/rechargerecord", middlewareController, homeController.rechargerecordPage)
    router.get("/wallet/withdrawalrecord", middlewareController, homeController.withdrawalrecordPage)

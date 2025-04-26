@@ -426,6 +426,67 @@
              /* padding: 0.8rem 1rem; */ /* If scrolling */
          }
       }
+
+
+      .menu-icon {
+        font-size: 34px;
+        cursor: pointer;
+        margin-left: 15px;
+        color: #f4f6f8;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 280px;
+        height: 100%;
+        background-color: #1f2937;
+        color: white;
+        transition: right 0.3s ease-in-out;
+        padding: 20px;
+        z-index: 1001;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.4);
+        overflow-y: auto;
+      }
+      .sidebar.open {
+        right: 0;
+      }
+      .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #4a5568;
+      }
+      .sidebar-header img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .sidebar-header .close-btn {
+        font-size: 28px;
+        color: #a0aec0;
+        cursor: pointer;
+      }
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        color: #cbd5e0;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+      }
+      .menu-item:hover {
+        background-color: #2d3748;
+        color: #ffffff;
+      }
       </style>
    </head>
 
@@ -444,6 +505,7 @@
                </button>
                
             </div>
+            <div class="menu-icon" id="menuToggle">☰</div>
          </header>
 
          <!-- Tabs -->
@@ -504,6 +566,48 @@
                <button class="cancel_payment" id="cancel_payment">Cancel and Create New Deposit</button>
             </div>
          </div>
+
+
+         <div id="sidebar" class="sidebar">
+            <!-- Always show user info and menu -->
+            <div class="sidebar-header">
+              <div style="display: flex; align-items: center; gap: 10px">
+                <img src="/images/avatar.svg" alt="User" />
+                <div>
+                  <div>
+                    <!-- Display username or 'User' if undefined -->
+                    <%= typeof username !== 'undefined' ? username : 'User' %>
+                  </div>
+                  <div style="font-size: 14px; color: #9ca3af">
+                    <!-- Display formatted money or '0.00' if undefined/false -->
+                    ₹<%= (typeof money === 'number') ? money.toLocaleString('en-IN') : (money ? money : '0.00') %>
+                  </div>
+                </div>
+              </div>
+              <!-- Ensure close button is always present -->
+              <div class="close-btn" id="closeSidebar">×</div>
+            </div>
+
+            <!-- Always show menu items -->
+            <a href="/wallet/recharge" class="menu-item">💰 DEPOSIT FUNDS</a>
+            <a href="/wallet/withdrawal" class="menu-item">💵 WITHDRAW</a>
+            <a href="/myProfile" class="menu-item">👤 PERSONAL DETAILS</a>
+            <a href="/wallet/rechargerecord" class="menu-item">📄 TRANSACTION HISTORY</a>
+            <a href="/levels" class="menu-item">📈 LEVEL MANAGEMENT</a>
+            <a href="/referral" class="menu-item">🎁 REFERRAL</a>
+            <!-- The Sign Out link might now always be visible, adjust its behavior if needed -->
+            <a href="/home" id="openLoginPopupBtn" class="menu-item">🚪 SIGN OUT</a>
+
+            <!-- Keep the E-KYC check if you still want it conditional -->
+            <% if (typeof ekyc !== 'undefined' && (ekyc == false || ekyc == 0)) { %>
+               <a href="/ekyc" class="menu-item">💰 E-KYC</a>
+            <% } %>
+            <!-- If you want E-KYC always visible too, just use this line instead: -->
+            <!-- <a href="/ekyc" class="menu-item">💰 E-KYC</a> -->
+
+          </div>
+
+
       </div>
       
 
@@ -696,6 +800,43 @@
             // Optional: Check for pending payments (Add your logic here if needed)
             // checkForPendingPayment();
          });
+
+
+
+
+         const menuToggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("sidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const sidebarLoginLink = document.getElementById("sidebarLoginLink");
+
+      if (menuToggle && sidebar && closeSidebar) {
+        menuToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          sidebar.classList.add("open");
+        });
+        closeSidebar.addEventListener("click", () =>
+          sidebar.classList.remove("open")
+        );
+        document.addEventListener("click", (event) => {
+          if (
+            sidebar &&
+            sidebar.classList.contains("open") &&
+            !sidebar.contains(event.target) &&
+            !menuToggle.contains(event.target)
+          ) {
+            sidebar.classList.remove("open");
+          }
+        });
+      }
+      if (sidebarLoginLink) {
+        sidebarLoginLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          sidebar.classList.remove("open");
+          setTimeout(() => {
+            $("#openLoginPopupBtn").trigger("click");
+          }, 150);
+        });
+      }
 
       </script>
    </body>

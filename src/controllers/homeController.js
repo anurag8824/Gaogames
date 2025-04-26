@@ -31,6 +31,10 @@ const homePage = async (req, res) => {
     }
 }
 
+const ad = async(req,res)=>{
+    return res.render("home/add.ejs")
+}
+
 const checkInPage = async (req, res) => {
     return res.render("checkIn/checkIn.ejs");
 }
@@ -128,23 +132,135 @@ const walletPage = async (req, res) => {
     return res.render("wallet/index.ejs");
 }
 
+// const rechargePage = async (req, res) => {
+//     return res.render("wallet/recharge.ejs", {
+//         MinimumMoney: process.env.MINIMUM_MONEY
+//     });
+// }
+
 const rechargePage = async (req, res) => {
-    return res.render("wallet/recharge.ejs", {
-        MinimumMoney: process.env.MINIMUM_MONEY
-    });
-}
+    try {
+        // --- Logic adapted from homePage ---
+        let auth = req?.cookies?.auth; // Get auth token from cookies
+
+        // Define variables with defaults for logged-out state
+        let username = null;
+        let money = null; // Using null as default, template handles display
+        let ekyc = null;  // Using null as default
+
+        // Check if the user is potentially logged in (auth cookie exists)
+        if (auth) {
+            // Query the database for user details using the token
+            const [userData] = await connection.query('SELECT `win_wallet`, `money`, `name_user`, `ekyc` FROM users WHERE `token` = ? LIMIT 1', [auth]);
+
+            // Check if user was actually found with that token
+            if (userData && userData.length > 0) {
+                const user = userData[0];
+                // Calculate total money (handle potential nulls/NaN with || 0)
+                let calculatedMoney = (Number(user.win_wallet) || 0) + (Number(user.money) || 0);
+                money = calculatedMoney; // Assign the calculated value
+                username = user.name_user;
+                ekyc = user.ekyc;
+
+                // Optional: Log fetched data for verification
+                // console.log("Recharge Page - User Found:", { username, money, ekyc });
+            } else {
+                // Optional: Log if token exists but user not found (indicates invalid token?)
+                // console.log("Recharge Page - Auth cookie found, but no user matched token:", auth);
+                // Keep defaults (user is effectively logged out)
+            }
+        } else {
+            // Optional: Log if no auth cookie found
+            // console.log("Recharge Page - No auth cookie found.");
+        }
+        // --- End of adapted logic ---
+
+        // Render the recharge template, passing MinimumMoney AND the user data (or defaults)
+        return res.render("wallet/recharge.ejs", {
+            MinimumMoney: process.env.MINIMUM_MONEY, // Keep this
+            username: username,                     // Pass username (or null)
+            money: money,                           // Pass calculated money (or null)
+            ekyc: ekyc                              // Pass ekyc status (or null)
+        });
+
+    } catch (error) {
+        console.error("Error in rechargePage controller:", error);
+        // Consider rendering an error page or sending a generic error
+        return res.status(500).send("Error loading recharge page.");
+    }
+};
+
 
 const rechargerecordPage = async (req, res) => {
     return res.render("wallet/rechargerecord.ejs");
 }
 
+// Assuming 'connection' is your database connection object, required nearby
+
 const withdrawalPage = async (req, res) => {
-    const auth = req.cookies.auth;
-    const [user] = await connection.query('SELECT `extra`,`ekyc` FROM users WHERE `token` = ? ', [auth]);
-    let extra = user[0]?.extra;
-    let ekyc = user[0]?.ekyc;
-    return res.render("wallet/withdrawal.ejs",{ extra,ekyc});
-}
+    try {
+        // --- Get auth token from cookies ---
+        let auth = req?.cookies?.auth;
+
+        // --- Define variables with defaults for logged-out state ---
+        let username = null;
+        let money = null; // Will hold calculated total balance
+        let ekyc = null;
+        let extra = null; // Keep the specific data for this page, default to null
+
+        // --- Check if the user is potentially logged in (auth cookie exists) ---
+        if (auth) {
+            // --- Query the database for ALL details needed for sidebar AND withdrawal page ---
+            const [userData] = await connection.query(
+                'SELECT `win_wallet`, `money`, `name_user`, `ekyc`, `extra` FROM users WHERE `token` = ? LIMIT 1',
+                [auth]
+            );
+
+            // Check if user was actually found with that token
+            if (userData && userData.length > 0) {
+                const user = userData[0];
+
+                // Calculate total money (handle potential nulls/NaN with || 0)
+                let calculatedMoney = (Number(user.win_wallet) || 0) + (Number(user.money) || 0);
+                money = calculatedMoney; // Assign the calculated value
+
+                // Assign other values
+                username = user.name_user;
+                ekyc = user.ekyc;
+                extra = user.extra; // Assign the value specific to withdrawal
+
+                // Optional: Log fetched data for verification
+                // console.log("Withdrawal Page - User Found:", { username, money, ekyc, extra });
+
+            } else {
+                // Optional: Log if token exists but user not found
+                // console.log("Withdrawal Page - Auth cookie found, but no user matched token:", auth);
+                // Keep defaults (user is effectively logged out)
+            }
+        } else {
+            // Optional: Log if no auth cookie found
+            // console.log("Withdrawal Page - No auth cookie found.");
+        }
+        // --- End of user data logic ---
+
+        // --- Render the withdrawal template, passing ALL required data ---
+        return res.render("wallet/withdrawal.ejs", {
+            username: username, // Pass username (or null)
+            money: money,       // Pass calculated money (or null)
+            ekyc: ekyc,         // Pass ekyc status (or null)
+            extra: extra        // Pass the withdrawal-specific data (or null)
+            // Add any other variables specifically needed by withdrawal.ejs
+        });
+
+    } catch (error) {
+        console.error("Error in withdrawalPage controller:", error);
+        // Consider rendering an error page or sending a generic error
+        return res.status(500).send("Error loading withdrawal page.");
+    }
+};
+
+// Ensure this function is exported correctly from your controller file
+// module.exports = { withdrawalPage, ... };
 
 const withdrawalrecordPage = async (req, res) => {
     return res.render("wallet/withdrawalrecord.ejs");
@@ -573,5 +689,6 @@ module.exports = {
     Confidentiality,
     notificationPage,
     gamePage,
-    ekyc
+    ekyc,
+    ad 
 }
