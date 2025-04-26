@@ -196,12 +196,12 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     let speed = 0.01;
     let timeout = 5000;
     let timeout2 = 1000;
-    if (isflying) {
-        a = current_Value;
-        timeout = 0;
-        timeout2 = 0;
-        speed = current_speed;
-    }
+    // if (isflying) {
+    //     a = current_Value;
+    //     timeout = 0;
+    //     timeout2 = 0;
+    //     speed = current_speed;
+    // }
 
     $("#auto_increment_number_div").hide();
     $('.loading-game').addClass('show');

@@ -1517,29 +1517,55 @@
             }
             if ($loadingOverlay.length) $loadingOverlay.fadeIn(10);
             $.ajax({
-              type: "POST",
-              url: "/api/webapi/login",
-              data: { username: username, pwd: password },
-              dataType: "json",
-              success: function (response) {
-                if (response.status === true) {
-                  setCookie("token", response.token, 1);
-                  setCookie("auth", response.value, 1);
-                  if ($loadingOverlay.length) $loadingOverlay.fadeOut(100);
-                  $loginPopupOverlay.fadeOut(200, function () {
-                    window.location.reload();
-                  });
-                } else {
-                  if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
-                  alertMessPopup(response.message || "Invalid credentials.");
-                }
-              },
-              error: function (jqXHR) {
-                console.error("Login AJAX Error:", jqXHR.statusText);
-                if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
-                alertMessPopup("Login failed. Please try again.");
-              },
+  type: "POST",
+  url: "/api/webapi/login",
+  data: { username: username, pwd: password },
+  dataType: "json",
+  success: function (response) {
+    if (response.status === true) {
+      setCookie("token", response.token, 1);
+      setCookie("auth", response.value, 1);
+
+      // Now, get the user info to check if admin or not
+      $.ajax({
+        type: "GET",
+        url: "/api/webapi/GetUserInfo",
+        dataType: "json",
+        success: function (userinfo) {
+          if (userinfo.status === true) {
+            if ($loadingOverlay.length) $loadingOverlay.fadeOut(100);
+            $loginPopupOverlay.fadeOut(200, function () {
+              if (userinfo.data.name_user === "Admin") {
+                // If admin, redirect
+                window.location.href = "/admin/manager/aviator";
+              } else {
+                // If normal user, reload
+                window.location.reload();
+              }
             });
+          } else {
+            if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
+            alertMessPopup(userinfo.message || "Failed to get user info.");
+          }
+        },
+        error: function () {
+          if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
+          alertMessPopup("Error getting user info.");
+        }
+      });
+
+    } else {
+      if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
+      alertMessPopup(response.message || "Invalid credentials.");
+    }
+  },
+  error: function (jqXHR) {
+    console.error("Login AJAX Error:", jqXHR.statusText);
+    if ($loadingOverlay.length) $loadingOverlay.fadeOut(300);
+    alertMessPopup("Login failed. Please try again.");
+  }
+});
+
           });
         }
 

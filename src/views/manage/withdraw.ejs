@@ -194,61 +194,45 @@
 
     // Confirm button event
     $(document).on('click', '.btn-success', function (e) {
-      e.preventDefault();
-      Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to accept this withdraw?",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, accept it!'
-  }).then((result) => {
-    if(result.isConfirmed){
-      let id = $(this).attr('data');
-      $.ajax({
-        type: "POST",
-        url: "/api/webapi/admin/withdraw",
-        data: { id: id, type: 'confirm' },
-        dataType: "json",
-        success: function () {
-          Swal.fire('Good job!', 'Withdrawal Accepted Successfully!', 'success');
-          setTimeout(() => { location.reload(); }, 100);
-        }
-      });
-    }
-  })
-     
+    e.preventDefault();
+    let id = $(this).attr('data');
+    
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/admin/withdraw",
+      data: { id: id, type: 'confirm' },
+      dataType: "json",
+      success: function () {
+        // Optionally simple alert
+        // alert('Withdrawal Accepted Successfully!');
+        setTimeout(() => {
+          location.reload();
+        }, 100);
+      }
     });
+});
+
 
     // Delete button event
     $(document).on('click', '.btn-danger', function (e) {
-      e.preventDefault();
-      Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to reject this withdraw?",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
-  }).then((result) => {
-    if(result.isConfirmed){
-      let id = $(this).attr('data');
-      $.ajax({
-        type: "POST",
-        url: "/api/webapi/admin/withdraw",
-        data: { id: id, type: 'delete' },
-        dataType: "json",
-        success: function () {
-          Swal.fire('Good job!', 'Withdrawal Rejected Successfully!', 'success');
-          setTimeout(() => { location.reload(); }, 100);
-        }
-      });
-    }
-  })
-      
+    e.preventDefault();
+    let id = $(this).attr('data');
+    
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/admin/withdraw",
+      data: { id: id, type: 'delete' },
+      dataType: "json",
+      success: function () {
+        // Optionally show a simple alert
+        // alert('Withdrawal Rejected Successfully!');
+        setTimeout(() => {
+          location.reload();
+        }, 100);
+      }
     });
+});
+
   </script>
 </body>
 

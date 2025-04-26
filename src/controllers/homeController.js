@@ -34,6 +34,9 @@ const homePage = async (req, res) => {
 const ad = async(req,res)=>{
     return res.render("home/add.ejs")
 }
+const tele = async (req,res)=>{
+    return res.render ("home/tele.ejs")
+}
 
 const checkInPage = async (req, res) => {
     return res.render("checkIn/checkIn.ejs");
@@ -152,7 +155,7 @@ const rechargePage = async (req, res) => {
         if (auth) {
             // Query the database for user details using the token
             const [userData] = await connection.query('SELECT `win_wallet`, `money`, `name_user`, `ekyc` FROM users WHERE `token` = ? LIMIT 1', [auth]);
-
+    
             // Check if user was actually found with that token
             if (userData && userData.length > 0) {
                 const user = userData[0];
@@ -207,12 +210,12 @@ const withdrawalPage = async (req, res) => {
         let money = null; // Will hold calculated total balance
         let ekyc = null;
         let extra = null; // Keep the specific data for this page, default to null
-
+         let first = null;
         // --- Check if the user is potentially logged in (auth cookie exists) ---
         if (auth) {
             // --- Query the database for ALL details needed for sidebar AND withdrawal page ---
             const [userData] = await connection.query(
-                'SELECT `win_wallet`, `money`, `name_user`, `ekyc`, `extra` FROM users WHERE `token` = ? LIMIT 1',
+                'SELECT `win_wallet`, `money`, `name_user`,`first_recharge`, `ekyc`, `extra` FROM users WHERE `token` = ? LIMIT 1',
                 [auth]
             );
 
@@ -227,7 +230,9 @@ const withdrawalPage = async (req, res) => {
                 // Assign other values
                 username = user.name_user;
                 ekyc = user.ekyc;
-                extra = user.extra; // Assign the value specific to withdrawal
+                extra = user.extra; 
+                first =user.first_recharge
+                // Assign the value specific to withdrawal
 
                 // Optional: Log fetched data for verification
                 // console.log("Withdrawal Page - User Found:", { username, money, ekyc, extra });
@@ -248,7 +253,8 @@ const withdrawalPage = async (req, res) => {
             username: username, // Pass username (or null)
             money: money,       // Pass calculated money (or null)
             ekyc: ekyc,         // Pass ekyc status (or null)
-            extra: extra        // Pass the withdrawal-specific data (or null)
+            extra: extra,
+            first: first,     // Pass the withdrawal-specific data (or null)
             // Add any other variables specifically needed by withdrawal.ejs
         });
 
@@ -690,5 +696,6 @@ module.exports = {
     notificationPage,
     gamePage,
     ekyc,
-    ad 
+    ad,
+    tele
 }

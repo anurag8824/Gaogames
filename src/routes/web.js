@@ -101,6 +101,7 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
    })
    router.get("/home", homeController.homePage)
    router.get("/ad.php",homeController.ad)
+   router.get("/ad",homeController.tele)
    router.get("/promotion",homeController.promotionPage)
    router.get("/checkIn/reward",middlewareController,homeController.attendance);
 
@@ -126,7 +127,7 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
 
 
    router.get("/wallet", middlewareController, homeController.walletPage)
-   router.get("/wallet/recharge", middlewareController, homeController.rechargePage,homeController.homePage)
+   router.get("/wallet/recharge", middlewareController, homeController.rechargePage)
    router.get("/wallet/withdrawal", middlewareController, homeController.withdrawalPage)
    router.get("/wallet/rechargerecord", middlewareController, homeController.rechargerecordPage)
    router.get("/wallet/withdrawalrecord", middlewareController, homeController.withdrawalrecordPage)

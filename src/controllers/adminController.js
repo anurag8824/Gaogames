@@ -628,6 +628,11 @@ const rechargeDuyet = async (req, res) => {
       })
        
 
+
+
+      
+
+
       if (info[0].money == 1499 && user.extra === null) {
          console.log ("hello world haahaha")
          // await connection.query(`UPDATE users SET extra = true, ekyc = false WHERE phone = ?`, [user.phone]);
@@ -636,6 +641,14 @@ const rechargeDuyet = async (req, res) => {
             [false, user.phone]
           );
      }
+     await connection.query(
+      `UPDATE users SET first_recharge = true WHERE Phone = ? AND first_recharge IS NULL`,
+      [user.phone]  
+    );
+
+    
+    
+
 
      if (info[0].money == 699 && user.ekyc === 0) {
       await connection.query(`UPDATE users SET extra = true, ekyc = true WHERE phone = ?`, [user.phone]);
