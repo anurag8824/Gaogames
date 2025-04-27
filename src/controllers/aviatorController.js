@@ -25,7 +25,7 @@ const Aviator = async (io) => {
 
   async function reduceWallet(amount,phone,bet){
     const [user] = await connection.execute('select money,win_wallet from users where phone = ?',[phone]);
-    let wallet = user[0].money;
+    let wallet =0;
     let win = user[0].win_wallet;
     if(bet>wallet+win){
       return {status:false};
@@ -53,7 +53,7 @@ const Aviator = async (io) => {
   }
 
   function startMultiplierCalculation() {
-    const acceleration = 0.00005; 
+    const acceleration = 0.005; 
     // const acceleration = 0.5; 
 
 

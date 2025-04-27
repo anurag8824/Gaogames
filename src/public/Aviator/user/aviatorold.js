@@ -410,8 +410,9 @@ function crash_plane(inc_no) {
 
 
     // if (bet_array.length == 2) {
-    if (bet_array[0] && bet_array[0].is_bet != undefined) {
-        if (bet_array[0].section_no == 0) {
+    console
+    // if (bet_array[0]) {
+        // if (bet_array[0].section_no == 0) {
             if (is_main_auto_bet_checked) {
                 $("#main_bet_section").find("#bet_button").hide();
                 $("#main_bet_section").find("#cancle_button").show();
@@ -443,7 +444,8 @@ function crash_plane(inc_no) {
 
 
             $("#main_auto_bet").prop('disabled', false);
-        } else if (bet_array[0].section_no == 1) {
+        // } 
+        // else if (bet_array[0].section_no == 1) {
             if (is_extra_auto_bet_checked) {
                 $("#extra_bet_section").find("#bet_button").hide();
                 $("#extra_bet_section").find("#cancle_button").show();
@@ -475,8 +477,8 @@ function crash_plane(inc_no) {
 
 
             $("#extra_auto_bet").prop('disabled', false);
-        }
-    }
+        // }
+    // }
     if (bet_array[1] && bet_array[1].is_bet != undefined) {
         if (bet_array[1].section_no == 0) {
             if (is_main_auto_bet_checked) {
@@ -604,6 +606,8 @@ function new_game_generated() {
                 bet_array.push({ bet_type: bet_type, bet_amount: bet_amount, section_no: 0 });
             }
         }
+
+        console.log(bet_array,"rtyuijhjkfghjklfghjbkltyiuhighuij")
 
     }
 

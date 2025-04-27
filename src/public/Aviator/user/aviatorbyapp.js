@@ -230,7 +230,7 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
             lets_fly_one();
             lets_fly(parseFloat(a));
             info_data({});
-            const acceleration = 0.00005;
+            const acceleration = 0.005;
             // const acceleration = .0005;
 
             increamtsappgame = setInterval(() => {
@@ -255,7 +255,7 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                   }
 
                 incrementor(parseFloat(a).toFixed(2));
-                if(a>=xyz){
+                if(a >= xyz){
                     handleCrash(msg)
                 }
 
