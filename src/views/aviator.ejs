@@ -1249,27 +1249,27 @@
             $(document).ready(function () {
                 console.log('started');
 
-                document.addEventListener("touchstart", function (event) {
-                    // Check if the page is at the top and the user is pulling down
-                    if (window.scrollY === 0 && event.touches.length > 0) {
-                        const touchStartY = event.touches[0].clientY;
+                // document.addEventListener("touchstart", function (event) {
+                //     // Check if the page is at the top and the user is pulling down
+                //     if (window.scrollY === 0 && event.touches.length > 0) {
+                //         const touchStartY = event.touches[0].clientY;
 
-                        // Save the starting Y position of the touch to determine direction
-                        event.target.touchStartY = touchStartY;
-                    }
-                }, { passive: true });
+                //         // Save the starting Y position of the touch to determine direction
+                //         event.target.touchStartY = touchStartY;
+                //     }
+                // }, { passive: true });
 
-                document.addEventListener("touchmove", function (event) {
-                    // If the user is at the top and is trying to pull down (negative movement)
-                    if (window.scrollY === 0 && event.target.touchStartY !== undefined) {
-                        const touchCurrentY = event.touches[0].clientY;
+                // document.addEventListener("touchmove", function (event) {
+                //     // If the user is at the top and is trying to pull down (negative movement)
+                //     if (window.scrollY === 0 && event.target.touchStartY !== undefined) {
+                //         const touchCurrentY = event.touches[0].clientY;
 
-                        // Only prevent the default behavior when pulling down
-                        if (touchCurrentY > event.target.touchStartY) {
-                            event.preventDefault(); // Prevent pull-to-refresh
-                        }
-                    }
-                }, { passive: false });
+                //         // Only prevent the default behavior when pulling down
+                //         if (touchCurrentY > event.target.touchStartY) {
+                //             event.preventDefault(); // Prevent pull-to-refresh
+                //         }
+                //     }
+                // }, { passive: false });
 
 
                 info_data({

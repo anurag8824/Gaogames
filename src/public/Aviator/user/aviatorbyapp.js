@@ -182,7 +182,7 @@ let crash = 0;
 
 function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
 
-    console.log('game started');
+    console.log('game started',"inside gamegenraetrfgh");
 
     randomDataArray = Array.from({ length: Math.floor(Math.random() * 39) + 10 }, () => ({
         cashout_multiplier: -1,
@@ -196,6 +196,8 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     let speed = 0.01;
     let timeout = 5000;
     let timeout2 = 1000;
+    let xyz= 10;
+    let msg;
     // if (isflying) {
     //     a = current_Value;
     //     timeout = 0;
@@ -229,6 +231,8 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
             lets_fly(parseFloat(a));
             info_data({});
             const acceleration = 0.00005;
+            // const acceleration = .0005;
+
             increamtsappgame = setInterval(() => {
                 a = a + speed;
                 if(a<5){
@@ -251,6 +255,11 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                   }
 
                 incrementor(parseFloat(a).toFixed(2));
+                if(a>=xyz){
+                    handleCrash(msg)
+                }
+
+                // handleCrash(msg)
 
                 if (crash === 1) {
                     clearInterval(increamtsappgame);
@@ -258,58 +267,138 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
 
             }, 100);
         }, timeout2)
+    
 
+        // socket.off('crash').on('crash', (msg) => {
+        //     crash = 1;
+        //     console.log(msg, 'message')
+        //     let res = parseFloat(a).toFixed(2);
+            
+        //     console.log()
+        //     if(a  >= msg.crash){
+        //         console.log("hhjkhjkghj")
+        //         gameover(msg.crash);
+        //         crash_plane(parseFloat(msg.crash.toFixed(2)));
+        //     incrementor(parseFloat(msg.crash.toFixed(2)));
 
-        socket.off('crash').on('crash', (msg) => {
-            crash = 1;
-            console.log(msg, 'message')
-            let res = parseFloat(a).toFixed(2);
-            crash_plane(parseFloat(msg.crash.toFixed(2)));
-            incrementor(parseFloat(msg.crash.toFixed(2)));
-            gameover(msg.crash);
-            $("#all_bets .mCSB_container").empty();
-            clearInterval(increamtsappgame);
+            
+        //     $("#all_bets .mCSB_container").empty();
+        //     clearInterval(increamtsappgame);
 
-            // Simulate bet history with random data
-            // let betHistory = generateRandomBetHistory();
-            setTimeout(() => {
-                socket.emit('getBetHistory', { phone, period: msg.period }, (betHistory) => {
-                    for (let i = 0; i < betHistory.length; i++) {
-                        console.log(betHistory, 'at crash')
-                        $("#my_bet_list").prepend(`
-                                <div class="list-items">
-                                    <div class="column-1 users fw-normal">
-                                        ${betHistory[i].formatted_time}
-                                    </div>
-                                    <div class="column-2">
-                                        <button class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
-                                            ${betHistory[i].amount}₹
-                                        </button>
-                                    </div>
-                                    <div class="column-3">
-                                        <div class="bg3 custom-badge mx-auto">
-                                            ${parseFloat(betHistory[i].crash) > 1 ? betHistory[i].crash : betHistory[i].result}x
-                                        </div>
-                                    </div>
-                                    <div class="column-4 fw-normal">
-                                        ${parseFloat(betHistory[i].crash) > 1 ? (parseFloat(betHistory[i].crash) * betHistory[i].amount) + '₹' : ''}
-                                    </div>
-                                </div>
-                            `);
-                    }
+        //     // Simulate bet history with random data
+        //     // let betHistory = generateRandomBetHistory();
+        //     setTimeout(() => {
+        //         socket.emit('getBetHistory', { phone, period: msg.period }, (betHistory) => {
+        //             for (let i = 0; i < betHistory.length; i++) {
+        //                 console.log(betHistory, 'at crash')
+        //                 $("#my_bet_list").prepend(`
+        //                         <div class="list-items">
+        //                             <div class="column-1 users fw-normal">
+        //                                 ${betHistory[i].formatted_time}
+        //                             </div>
+        //                             <div class="column-2">
+        //                                 <button class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
+        //                                     ${betHistory[i].amount}₹
+        //                                 </button>
+        //                             </div>
+        //                             <div class="column-3">
+        //                                 <div class="bg3 custom-badge mx-auto">
+        //                                     ${parseFloat(betHistory[i].crash) > 1 ? betHistory[i].crash : betHistory[i].result}x
+        //                                 </div>
+        //                             </div>
+        //                             <div class="column-4 fw-normal">
+        //                                 ${parseFloat(betHistory[i].crash) > 1 ? (parseFloat(betHistory[i].crash) * betHistory[i].amount) + '₹' : ''}
+        //                             </div>
+        //                         </div>
+        //                     `);
+        //             }
 
-                })
-            }, 500)
+        //         })
+        //     }, 500)
 
-            // $("#my_bet_list").empty();
-            setTimeout(()=>{
-            gamegenerate(false); // Start the game cycle again
-            },1000)
+        //     // $("#my_bet_list").empty();
+        //     setTimeout(()=>{
+        //     gamegenerate(false); // Start the game cycle again
+        //     },1000)
+        // }
              
-        })
+        // })
 
         // Simulate incrementor behavior with random game data
+        
+        // let msg = 1000
+        socket.on("crashv",(msgx)=>{
+            console.log(msgx,"fghjhkghjkg")
+            msg = msgx
+            xyz = msgx.crash
+        })
+
+        function handleCrash(msg) {
+            crash = 1;
+            // console.log(msg, 'message');
+            let res = parseFloat(a).toFixed(2);
+        
+            // Check if the crash value is greater than or equal to 'a'
+            
+                console.log("Crash match detected!");
+                
+                // Call functions that handle the game over and update the UI
+                gameover(msg.crash);
+                crash_plane(parseFloat(msg.crash.toFixed(2)));
+                incrementor(parseFloat(msg.crash.toFixed(2)));
+        
+                // Clear the bets container
+                $("#all_bets .mCSB_container").empty();
+        
+                // Clear the game interval (presumably to stop the ongoing game)
+                clearInterval(increamtsappgame);
+        
+                // Simulate bet history with random data (for testing or as placeholder)
+                // let betHistory = generateRandomBetHistory();
+        
+                // Fetch and display the bet history after a short delay
+                setTimeout(() => {
+                    socket.emit('getBetHistory', { phone, period: msg.period }, (betHistory) => {
+                        if (betHistory && betHistory.length > 0) {
+                            // Prepend bet history to the list
+                            betHistory.forEach((bet) => {
+                                console.log(bet, 'at crash');
+                                $("#my_bet_list").prepend(`
+                                    <div class="list-items">
+                                        <div class="column-1 users fw-normal">
+                                            ${bet.formatted_time}
+                                        </div>
+                                        <div class="column-2">
+                                            <button class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
+                                                ${bet.amount}₹
+                                            </button>
+                                        </div>
+                                        <div class="column-3">
+                                            <div class="bg3 custom-badge mx-auto">
+                                                ${parseFloat(bet.crash) > 1 ? bet.crash : bet.result}x
+                                            </div>
+                                        </div>
+                                        <div class="column-4 fw-normal">
+                                            ${parseFloat(bet.crash) > 1 ? (parseFloat(bet.crash) * bet.amount) + '₹' : ''}
+                                        </div>
+                                    </div>
+                                `);
+                            });
+                        } else {
+                            console.error('No bet history received');
+                        }
+                    });
+                }, 500);
+        
+                // Restart the game cycle after a brief delay
+                setTimeout(() => {
+                    gamegenerate(false);  // Restart game logic
+                }, 1000);
+            
+        }
+        
     }, timeout);
+
 }
 
 // Generate random game data

@@ -21,7 +21,7 @@ const homePage = async (req, res) => {
         
         const [user] = await connection.query('SELECT `win_wallet`,`money`, `name_user`,`ekyc` FROM users WHERE `token` = ? ', [auth]); 
         console.log(user[0],"username hahahahhahahahahhah")     
-         let money = Number(user[0]?.win_wallet || 0)  +  Number(user[0]?.money || 0);
+         let money = Number(user[0]?.win_wallet || 0);
 
         let username = user[0]?.name_user
         let ekyc = user[0]?.ekyc
@@ -224,7 +224,7 @@ const withdrawalPage = async (req, res) => {
                 const user = userData[0];
 
                 // Calculate total money (handle potential nulls/NaN with || 0)
-                let calculatedMoney = (Number(user.win_wallet) || 0) + (Number(user.money) || 0);
+                let calculatedMoney = Number(user.win_wallet) || 0 ;
                 money = calculatedMoney; // Assign the calculated value
 
                 // Assign other values
@@ -641,7 +641,7 @@ const [betHistory] = await connection.execute(
             currency: '₹',
             id: 12345,
         },
-        wallet: user[0].money+user[0]?.win_wallet,
+        wallet: user[0]?.win_wallet,
         settings: {
             minBetAmount: 10,
             maxBetAmount: 10000,

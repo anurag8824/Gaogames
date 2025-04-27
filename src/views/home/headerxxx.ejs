@@ -134,15 +134,15 @@
                         <li>
 
                         <li>
-                            <button   class="f-12 justify-content-between" onclick="signOut()">
+                            <a   class="f-12 justify-content-between" onclick="signOut()">
                                 <div class="d-flex align-items-center">
                                     <span class="material-symbols-outlined ico f-20">
                                         payments
                                     </span>SIGN OUT
                                 </div>
-                            </button>
+                            </a>
                         </li>
-                        <% if (ekyc === false) { %>
+                        <% if (ekyc === false || ekyc ==0) { %>
                             <li>
                               <a href="/ekyc" class="f-12 justify-content-between">
                                 <div class="d-flex align-items-center">

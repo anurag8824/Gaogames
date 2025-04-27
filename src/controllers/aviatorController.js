@@ -103,9 +103,10 @@ const Aviator = async (io) => {
 
     crashValue = 5.0;
     
-    io.emit('crash', { crash: val,period:currentPeriod });
+    // io.emit('crash', { crash: val,period:currentPeriod });
     isFlying = false;
    
+    //  isFlying = false;
     
 
     if (betArray.length > 0) {
@@ -130,6 +131,7 @@ const Aviator = async (io) => {
    
     const [result] = await connection.execute('select aviator from admin');
     let adminValue = result[0].aviator;
+
     // await connection.execute('UPDATE admin SET aviator = ?',[0.00]);
 
 
@@ -148,6 +150,8 @@ const Aviator = async (io) => {
         }
       
       io.emit('newbet',betArray);
+      io.emit("crashv",{crash:crashValue,period:currentPeriod});
+
       startMultiplierCalculation();
       },1000)
       
@@ -297,6 +301,7 @@ const Aviator = async (io) => {
     });
 
     socket.on('getBetHistory',async (msg,callback)=>{
+      console.log(msg.phone,msg.period,"ghjkbhjkbvnmbm")
       const [betHistory] = await connection.execute(
         `SELECT ar.*, a.*, 
                 DATE_FORMAT(ar.time, '%Y-%m-%d %H:%i:%s') AS formatted_time
@@ -317,6 +322,7 @@ const Aviator = async (io) => {
   socket.on('crashNow',(callback)=>{
      if(isFlying){
       handleCrash(current_Value);
+      io.emit("crashv",{crash:current_Value,period:currentPeriod})
       clearInterval(multiplierInterval);
       callback(true)
      }
