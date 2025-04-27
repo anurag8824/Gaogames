@@ -134,13 +134,13 @@
                         <li>
 
                         <li>
-                            <a href="/login" class="f-12 justify-content-between">
+                            <button   class="f-12 justify-content-between" onclick="signOut()">
                                 <div class="d-flex align-items-center">
                                     <span class="material-symbols-outlined ico f-20">
                                         payments
                                     </span>SIGN OUT
                                 </div>
-                            </a>
+                            </button>
                         </li>
                         <% if (ekyc === false) { %>
                             <li>
@@ -316,7 +316,16 @@
       // Optional: Alert user that the code was copied
       alert("Referral code copied: " + copyText.value);
     }
+    function signOut() {
+    // Delete the token and auth cookies
+    deleteCookie('token');
+    deleteCookie('auth');
+
+    // Optionally, redirect the user to the login page or home page
+    window.location.href = '/home';  // or any other page
+}
   </script>
+
 
 
 

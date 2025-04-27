@@ -1,4 +1,4 @@
-// const mysql = require('mysql2/promise');
+const mysql = require('mysql2/promise');
 
 // const connection = mysql.createPool({
 //     host: 'localhost',
@@ -13,7 +13,7 @@
 
 // module.exports = connection;
 
-const mysql = require('mysql2/promise');
+// const mysql = require('mysql2/promise');
 
 const connection = mysql.createPool({
     host: 'localhost', // or '127.0.0.1' since it's on the same EC2 server
