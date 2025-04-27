@@ -53,7 +53,7 @@ const Aviator = async (io) => {
   }
 
   function startMultiplierCalculation() {
-    const acceleration = 0.005; 
+    const acceleration = 0.0005; 
     // const acceleration = 0.5; 
 
 
