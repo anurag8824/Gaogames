@@ -241,8 +241,12 @@ const Aviator = async (io) => {
   io.on('connection', (socket) => {
     console.log('A user connected');
 
+
     socket.on('initialValReq', () => {
-      socket.emit('initialVal', { isFlying, current_Value,speed});
+      isFlying =true
+      current_Value = 1,
+      speed = 0.5
+      socket.emit('initialVal', { isFlying , current_Value,speed});
     });
 
     socket.on('bet', async (msg, callback) => {

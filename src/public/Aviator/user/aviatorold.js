@@ -942,12 +942,20 @@ function show_bet_count(count) {
 }
 
 function bet_now(element, section_no) {
+
+    console.log(element,"ghjklghjkh")
     if (element.disabled) {
         return; // Do nothing if the button is disabled
+
+
     }
+
+
+
+    console.log(section_no,"section_number")
     if (stage_time_out == 1) {
         if (section_no == 0) {
-            enableDisable('main_bet_section');
+          enableDisable('main_bet_section');
         } else {
             enableDisable('extra_bet_section');
         }

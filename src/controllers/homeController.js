@@ -614,7 +614,7 @@ const partnerRecord = async (req,res)=>{
 
  const gamePage = async (req,res) =>{
     const auth = req.cookies.auth;
-    const [user] = await connection.execute('SELECT phone,money,win_wallet FROM users WHERE token = ?',[auth]);
+    const [user] = await connection.execute('SELECT phone,money,win_wallet,ekyc FROM users WHERE token = ?',[auth]);
     const query = `
   SELECT * 
   FROM aviator WHERE status != 0
@@ -649,7 +649,8 @@ const [betHistory] = await connection.execute(
         phone:user[0].phone,
         currentGameData: JSON.stringify({ id: 1, name: 'Game Name' }),
         result:result,
-        betHistory:betHistory
+        betHistory:betHistory,
+        ekyc
     });
 }
 
