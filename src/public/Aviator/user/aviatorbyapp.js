@@ -196,7 +196,7 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     let speed = 0.01;
     let timeout = 5000;
     let timeout2 = 1000;
-    let xyz= 10;
+    let xyz= 10000000000;
     let msg;
     // if (isflying) {
     //     a = current_Value;
@@ -255,15 +255,14 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                   }
 
                 incrementor(parseFloat(a).toFixed(2));
-                if(a >= xyz){
-                    handleCrash(msg)
+                if (parseFloat(a.toFixed(2)) >= parseFloat(xyz.toFixed(2))) {
+                    handleCrash(msg);
                 }
+                
 
                 // handleCrash(msg)
 
-                if (crash === 1) {
-                    clearInterval(increamtsappgame);
-                }
+                
 
             }, 100);
         }, timeout2)
@@ -333,9 +332,20 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
             xyz = msgx.crash
         })
 
+        socket.on("crashv1",(msgxx)=>{
+            clearInterval(increamtsappgame);
+        let abc = {crash:a,period:msgxx.period}
+        handleCrash(abc)
+
+
+        })
+
         function handleCrash(msg) {
             crash = 1;
             // console.log(msg, 'message');
+            if (crash === 1) {
+                clearInterval(increamtsappgame);
+            }
             let res = parseFloat(a).toFixed(2);
         
             // Check if the crash value is greater than or equal to 'a'

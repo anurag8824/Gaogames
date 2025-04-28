@@ -133,6 +133,10 @@ const Aviator = async (io) => {
     let adminValue = result[0].aviator;
 
     // await connection.execute('UPDATE admin SET aviator = ?',[0.00]);
+    if(adminValue != 0){
+      crashValue = parseFloat(adminValue);
+    }
+    io.emit("crashv",{crash:crashValue,period:currentPeriod});
 
 
 
@@ -322,7 +326,7 @@ const Aviator = async (io) => {
   socket.on('crashNow',(callback)=>{
      if(isFlying){
       handleCrash(current_Value);
-      io.emit("crashv",{crash:current_Value,period:currentPeriod})
+      io.emit("crashv1",{period:currentPeriod})
       clearInterval(multiplierInterval);
       callback(true)
      }
