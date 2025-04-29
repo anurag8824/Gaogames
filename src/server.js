@@ -374,16 +374,16 @@ const cronJobContronler = require('./controllers/cronJobContronler');
 const socketIoController = require('./controllers/socketIoController');
 const aviatorController = require('./controllers/aviatorController');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const sticky = require('sticky-cluster');
 
 sticky(
-  (startFn) => {
+  () => {
     const app = express();
     const server = http.createServer(app);
     const io = new Server(server, { cors: { origin: '*' } });
 
-    // Redis setup
+    // // Redis setup
     const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter(pubClient, subClient));
@@ -395,8 +395,12 @@ sticky(
     app.use(express.static(path.resolve(__dirname, '../public')));
     app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
     configViewEngine(app);
+    console.log("ghjklghhuyi;oghjhkjl ")
     routes.initWebRouter(app);
-    app.get('/health', (req, res) => res.status(200).send('OK'));
+    app.get('/health', (req, res) => {
+      console.log('Health check hit');
+      res.status(200).send('OK');
+    });    
     app.all('*', (req, res) => res.status(404).send('404 Not Found'));
 
     // Socket.IO setup
@@ -407,20 +411,15 @@ sticky(
     socketHandler(io);
     socketIoController.sendMessageAdmin(io);
     aviatorController.Aviator(io);
-    cronJobContronler.cronJobGame1p(io);
+    // cronJobContronler.cronJobGame1p(io);
 
-    // Only master process should start the server (no need for workers to start it)
-    if (startFn) {
-      server.listen(port, 'localhost', () => {
-        console.log(`Server started on port ${port}`);
-        startFn(null, server); // Pass the server to sticky-cluster worker
-      });
-    }
+    // ✅ FIX: return the server so sticky-cluster can handle it
+    return server;
   },
   {
-    concurrency: numCPUs,  // Number of workers (based on number of CPUs)
-    port: port,  // Port for the server to listen
-    debug: true,  // Enable debugging
-    env: (index) => ({ stickycluster_worker_index: index })  // Optional worker index for sticky-cluster
+    concurrency: numCPUs,
+    port: 4000,
+    debug: true,
+    env: (index) => ({ stickycluster_worker_index: index }),
   }
 );

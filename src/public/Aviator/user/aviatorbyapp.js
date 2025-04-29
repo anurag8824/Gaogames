@@ -1,4 +1,4 @@
-const socket = io("https://realcash.site");
+const socket = io();
 
 var increamtsappgame;
 
