@@ -579,23 +579,13 @@ server.listen(port, () => {
 // // Cron game 1 Phut 
 // cronJobContronler.cronJobGame1p(io);
 
-// // Check xem ai connect vào sever 
-// socketIoController.sendMessageAdmin(io);
-
-// aviatorController.Aviator(io);
-
-
-
-// // app.all('*', (req, res) => {
-// //     return res.render("404.ejs"); 
-// // });
-
-
-
-
-
-// server.listen(port, () => {
-//     console.log("Connected success port: " + port);
-// });
-
-
+    // ✅ FIX: return the server so sticky-cluster can handle it
+    return server;
+  },
+  {
+    concurrency: numCPUs,
+    port: 4000,
+    debug: true,
+    env: (index) => ({ stickycluster_worker_index: index }),
+  }
+);
