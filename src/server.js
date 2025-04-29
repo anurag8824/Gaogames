@@ -113,7 +113,9 @@ app.all('*', (req, res) => {
     // return res.render("404.ejs"); // Render a 404 page if you have one
     return res.status(404).send("404 Not Found"); // Or send a simple text response
 });
-
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 // --- Start Server ---
 server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
