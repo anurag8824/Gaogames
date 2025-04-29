@@ -366,7 +366,7 @@ if (cluster.isPrimary) {
   aviatorController.Aviator(io);
   cronJobContronler.cronJobGame1p(io);
 
-  // Use sticky-cluster to ensure WebSocket connections are handled correctly
+  // Start server with sticky-cluster
   sticky(server).listen(port, () => {
     console.log(`Worker ${process.pid} started at http://localhost:${port}`);
   });
