@@ -418,7 +418,7 @@ sticky(
   },
   {
     concurrency: numCPUs,
-    port: 4000,
+    port: port,
     debug: true,
     env: (index) => ({ stickycluster_worker_index: index }),
   }
