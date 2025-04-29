@@ -107,6 +107,11 @@ cronJobContronler.cronJobGame1p(io);
 
 // --- 404 Handler ---
 // Catch-all for requests that don't match any route
+
+app.get('/health', (req, res) => {
+      console.log('Health check hit');
+      res.status(200).send('OK');
+    }); 
 app.all('*', (req, res) => {
     // return res.render("404.ejs"); // Render a 404 page if you have one
     return res.status(404).send("404 Not Found"); // Or send a simple text response
