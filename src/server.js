@@ -292,7 +292,6 @@ const path = require('path');
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const cluster = require('cluster');
 const os = require('os');
 const numCPUs = os.cpus().length;
 
@@ -309,67 +308,59 @@ const aviatorController = require('./controllers/aviatorController');
 const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key';
 const port = process.env.PORT || 3000;
 
-// Import sticky-cluster for sticky sessions
 const sticky = require('sticky-cluster');
 
-if (cluster.isPrimary) {
-  console.log(`Master ${process.pid} is running`);
+// Use sticky-cluster to handle clustering
+sticky(
+  // Start function for each worker
+  (callback) => {
+    const app = express();
+    const server = http.createServer(app);
+    const io = new Server(server, { cors: { origin: '*' } });
 
-  // Fork workers for each CPU core
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
+    // Redis clients for Socket.IO
+    const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
+    const subClient = pubClient.duplicate();
+    io.adapter(createAdapter(pubClient, subClient));
+
+    // Middleware setup
+    app.use(cookieParser());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // Serve static files
+    app.use(express.static(path.resolve(__dirname, '../public')));
+    app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+
+    // Set up view engine and routes
+    configViewEngine(app);
+    routes.initWebRouter(app);
+
+    // Health check route
+    app.get('/health', (req, res) => res.status(200).send('OK'));
+    app.all('*', (req, res) => res.status(404).send('404 Not Found'));
+
+    // Socket.IO middleware for connection logging
+    io.use((socket, next) => {
+      console.log(`Socket (${socket.id}) connected`);
+      next();
+    });
+
+    // Attach custom socket handlers and game controllers
+    socketHandler(io);
+    socketIoController.sendMessageAdmin(io);
+    aviatorController.Aviator(io);
+    cronJobContronler.cronJobGame1p(io);
+
+    // Start server on a random port and notify sticky-cluster
+    server.listen(0, () => {
+      callback(null, server.address());
+    });
+  },
+  // Sticky-cluster options
+  {
+    concurrency: numCPUs,
+    port: port,
+    debug: true
   }
-
-  cluster.on('exit', (worker) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    cluster.fork(); // Optionally restart a new worker
-  });
-
-} else {
-  const app = express();  // Express app
-  const server = http.createServer(app);  // Create HTTP server
-  const io = new Server(server, {
-    cors: { origin: '*' }
-  });
-
-  // Redis clients for Socket.IO
-  const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
-  const subClient = pubClient.duplicate();
-  io.adapter(createAdapter(pubClient, subClient));
-
-  // Middleware setup
-  app.use(cookieParser());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-
-  // Serve static files
-  app.use(express.static(path.resolve(__dirname, '../public')));
-  app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
-
-  // Set up view engine and routes
-  configViewEngine(app);
-  routes.initWebRouter(app);
-
-  // Health check route
-  app.get('/health', (req, res) => res.status(200).send('OK'));
-  app.all('*', (req, res) => res.status(404).send('404 Not Found'));
-
-  // Socket.IO middleware for connection logging
-  io.use((socket, next) => {
-    console.log(`Socket (${socket.id}) connected`);
-    next();
-  });
-
-  // Attach custom socket handlers and game controllers
-  socketHandler(io);
-  socketIoController.sendMessageAdmin(io);
-  aviatorController.Aviator(io);
-  cronJobContronler.cronJobGame1p(io);
-
-  // Start server with sticky-cluster
-  sticky(server, {
-    startFn: () => server.listen(port, () => {
-      console.log(`Worker ${process.pid} started at http://localhost:${port}`);
-    })
-  });
-}
+);
