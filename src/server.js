@@ -409,26 +409,18 @@ sticky(
     aviatorController.Aviator(io);
     cronJobContronler.cronJobGame1p(io);
 
-    // Server listens on the specified port (3000) by the master
-    if (process.env.STICKY_CLUSTER_WORKER === 'true') {
-      server.listen(0, 'localhost', () => {
-        console.log('Worker started and listening on a random port');
-        startFn(null, server); // Pass server to sticky-cluster worker
-      });
-    } else {
-      // Master listens on port 3000
+    // Only master process should start the server (no need for workers to start it)
+    if (startFn) {
       server.listen(port, 'localhost', () => {
-        console.log(`Master server started on port ${port}`);
+        console.log(`Server started on port ${port}`);
+        startFn(null, server); // Pass the server to sticky-cluster worker
       });
     }
   },
   {
-    concurrency: numCPUs,  // Number of workers based on number of CPUs
-    port: port,  // Port for the server to listen (handled by master)
+    concurrency: numCPUs,  // Number of workers (based on number of CPUs)
+    port: port,  // Port for the server to listen
     debug: true,  // Enable debugging
-    env: (index) => ({
-      stickycluster_worker_index: index,
-      STICKY_CLUSTER_WORKER: 'true'  // Mark worker processes with this env variable
-    })  
+    env: (index) => ({ stickycluster_worker_index: index })  // Optional worker index for sticky-cluster
   }
 );
