@@ -283,6 +283,76 @@
 // }
 
 
+// require('dotenv/config');
+// require('dotenv').config({ path: '../.env' });
+
+// const express = require('express');
+// const http = require('http');
+// const path = require('path');
+// const { Server } = require('socket.io');
+// const cookieParser = require('cookie-parser');
+// const os = require('os');
+// const numCPUs = os.cpus().length;
+
+// const { createAdapter } = require('@socket.io/redis-adapter');
+// const { createClient } = require('ioredis');
+
+// const configViewEngine = require('./config/configEngine');
+// const routes = require('./routes/web');
+// const socketHandler = require('../src/public/DragonTiger/assets/socket.io/socket');
+// const cronJobContronler = require('./controllers/cronJobContronler');
+// const socketIoController = require('./controllers/socketIoController');
+// const aviatorController = require('./controllers/aviatorController');
+
+// const port = process.env.PORT || 3000;
+// const sticky = require('sticky-cluster');
+
+// sticky(
+//   (callback) => {
+//     const app = express();
+//     const server = http.createServer(app);
+//     const io = new Server(server, { cors: { origin: '*' } });
+
+//     // Redis setup
+//     const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
+//     const subClient = pubClient.duplicate();
+//     io.adapter(createAdapter(pubClient, subClient));
+
+//     // Middleware and routes
+//     app.use(cookieParser());
+//     app.use(express.json());
+//     app.use(express.urlencoded({ extended: true }));
+//     app.use(express.static(path.resolve(__dirname, '../public')));
+//     app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+//     configViewEngine(app);
+//     routes.initWebRouter(app);
+//     app.get('/health', (req, res) => res.status(200).send('OK'));
+//     app.all('*', (req, res) => res.status(404).send('404 Not Found'));
+
+//     // Socket.IO setup
+//     io.use((socket, next) => {
+//       console.log(`Socket (${socket.id}) connected`);
+//       next();
+//     });
+//     socketHandler(io);
+//     socketIoController.sendMessageAdmin(io);
+//     aviatorController.Aviator(io);
+//     cronJobContronler.cronJobGame1p(io);
+
+//     // Return the server instance instead of server.address()
+//     server.listen(0, () => {
+//       callback(null, server); // Pass server instance, not its address
+//     });
+//   },
+//   {
+//     concurrency: numCPUs,
+//     port: port,
+//     debug: true,
+//     env: (index) => ({ stickycluster_worker_index: index }) // Optional worker index
+//   }
+// );
+
+
 require('dotenv/config');
 require('dotenv').config({ path: '../.env' });
 
@@ -308,7 +378,7 @@ const port = process.env.PORT || 3000;
 const sticky = require('sticky-cluster');
 
 sticky(
-  (callback) => {
+  (startFn) => {
     const app = express();
     const server = http.createServer(app);
     const io = new Server(server, { cors: { origin: '*' } });
@@ -339,15 +409,17 @@ sticky(
     aviatorController.Aviator(io);
     cronJobContronler.cronJobGame1p(io);
 
-    // Return the server instance instead of server.address()
-    server.listen(0, () => {
-      callback(null, server); // Pass server instance, not its address
+    // Start the server and trigger callback with server instance
+    server.listen(port, () => {
+      console.log(`Server started on port ${port}`);
+      startFn();  // Call the sticky-cluster callback after the server has started
     });
   },
   {
-    concurrency: numCPUs,
-    port: port,
-    debug: true,
-    env: (index) => ({ stickycluster_worker_index: index }) // Optional worker index
+    concurrency: numCPUs,  // Number of workers (based on number of CPUs)
+    port: port,  // Port for the server to listen
+    debug: true,  // Enable debugging
+    env: (index) => ({ stickycluster_worker_index: index })  // Optional worker index for sticky-cluster
   }
 );
+
