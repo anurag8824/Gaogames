@@ -410,9 +410,8 @@ sticky(
     cronJobContronler.cronJobGame1p(io);
 
     // Start the server and trigger callback with server instance
-    server.listen(0, () => {
-      console.log(`Server started on port ${port}`);
-      startFn();  // Call the sticky-cluster callback after the server has started
+    server.listen(0, 'localhost', () => {
+      callback(null, server); // Pass server instance to sticky-cluster worker
     });
   },
   {
