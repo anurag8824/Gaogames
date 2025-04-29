@@ -290,7 +290,6 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const os = require('os');
 const numCPUs = os.cpus().length;
@@ -305,62 +304,50 @@ const cronJobContronler = require('./controllers/cronJobContronler');
 const socketIoController = require('./controllers/socketIoController');
 const aviatorController = require('./controllers/aviatorController');
 
-const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key';
 const port = process.env.PORT || 3000;
-
 const sticky = require('sticky-cluster');
 
-// Use sticky-cluster to handle clustering
 sticky(
-  // Start function for each worker
   (callback) => {
     const app = express();
     const server = http.createServer(app);
     const io = new Server(server, { cors: { origin: '*' } });
 
-    // Redis clients for Socket.IO
+    // Redis setup
     const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter(pubClient, subClient));
 
-    // Middleware setup
+    // Middleware and routes
     app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-
-    // Serve static files
     app.use(express.static(path.resolve(__dirname, '../public')));
     app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
-
-    // Set up view engine and routes
     configViewEngine(app);
     routes.initWebRouter(app);
-
-    // Health check route
     app.get('/health', (req, res) => res.status(200).send('OK'));
     app.all('*', (req, res) => res.status(404).send('404 Not Found'));
 
-    // Socket.IO middleware for connection logging
+    // Socket.IO setup
     io.use((socket, next) => {
       console.log(`Socket (${socket.id}) connected`);
       next();
     });
-
-    // Attach custom socket handlers and game controllers
     socketHandler(io);
     socketIoController.sendMessageAdmin(io);
     aviatorController.Aviator(io);
     cronJobContronler.cronJobGame1p(io);
 
-    // Start server on a random port and notify sticky-cluster
+    // Return the server instance instead of server.address()
     server.listen(0, () => {
-      callback(null, server.address());
+      callback(null, server); // Pass server instance, not its address
     });
   },
-  // Sticky-cluster options
   {
     concurrency: numCPUs,
     port: port,
-    debug: true
+    debug: true,
+    env: (index) => ({ stickycluster_worker_index: index }) // Optional worker index
   }
 );
