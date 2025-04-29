@@ -180,123 +180,104 @@
 // server.js - Updated for Clustering and Redis Adapter for Socket.IO
 
 // Load environment variables
+// Load environment variables
 require('dotenv/config');
-require('dotenv').config({ path: '../.env' }); // Optional: Load from specific .env file if needed
+require('dotenv').config({ path: '../.env' });
 
 const express = require('express');
-const http = require('http'); // Require http explicitly
-const path = require('path'); // Require path for resolving paths
-const { Server } = require('socket.io'); // Import Server class for options
-const jwt = require('jsonwebtoken'); // Require jsonwebtoken for auth
+const http = require('http');
+const path = require('path');
+const { Server } = require('socket.io');
+const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 // Clustering
 const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
+const os = require('os');
+const numCPUs = os.cpus().length;
 
-// Redis Adapter for Socket.IO
-const redisAdapter = require('socket.io-redis'); 
+// New Redis Adapter for Socket.IO
+const { createAdapter } = require('@socket.io/redis-adapter');
+const { createClient } = require('ioredis');
 
 // --- Configuration & Route Imports ---
-const configViewEngine = require('./config/configEngine'); // Your view engine setup function
-const routes = require('./routes/web'); // Your main web routes object { initWebRouter: ... }
-const socketHandler = require('../src/public/DragonTiger/assets/socket.io/socket'); // Your Dragon Tiger game socket logic handler
-const cronJobContronler = require('./controllers/cronJobContronler'); // Your cron job logic
-const socketIoController = require('./controllers/socketIoController'); // Your other socket logic (admin messages?)
-const aviatorController = require('./controllers/aviatorController'); 
+const configViewEngine = require('./config/configEngine');
+const routes = require('./routes/web');
+const socketHandler = require('../src/public/DragonTiger/assets/socket.io/socket');
+const cronJobContronler = require('./controllers/cronJobContronler');
+const socketIoController = require('./controllers/socketIoController');
+const aviatorController = require('./controllers/aviatorController');
 
 // --- Constants ---
-const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key'; // Use the same secret as in login controller
-const port = process.env.PORT || 3000; // Use environment variable or default
+const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key';
+const port = process.env.PORT || 3000;
 
-// --- Express & Server Initialization ---
+// --- Express Initialization ---
 const app = express();
-const server = http.createServer(app); // Use http.createServer
-const io = new Server(server, { // Initialize Socket.IO with options
-    cors: {
-        origin: '*', // Configure CORS properly for production
-    }
-});
 
-// --- Socket.IO - Redis Adapter for Clustering ---
-io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
+// --- Middleware ---
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// --- Express Middleware ---
-app.use(cookieParser()); // For parsing cookies if needed by auth/routes
-app.use(express.json()); // For parsing JSON request bodies
-app.use(express.urlencoded({ extended: true })); // For parsing URL-encoded request bodies
+// --- Static Folders ---
+app.use(express.static(path.resolve(__dirname, '../public')));
+app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
-// --- Static File Serving ---
-const publicPath = path.resolve(__dirname, '../public'); // Adjust path if necessary
-console.log("Setting static files directory to:", publicPath);
-app.use(express.static(publicPath));
-
-// Assuming 'uploads' is in the project root
-const uploadsPath = path.resolve(__dirname, '../uploads'); // Adjust path if necessary
-console.log("Setting uploads directory to:", uploadsPath);
-app.use('/uploads', express.static(uploadsPath)); // Serve uploads folder at /uploads route
-
-// --- View Engine Setup ---
+// --- View Engine ---
 configViewEngine(app);
 
-// --- Initialize Web Routes ---
+// --- Routes ---
 routes.initWebRouter(app);
 
-// --- Socket.IO Authentication Middleware ---
-io.use((socket, next) => {
-    console.log(`Socket attempting connection (${socket.id}). Checking token...`);
-    // Optional JWT token authentication (Uncomment if needed)
-    // const token = socket.handshake.auth.token;
-    // if (!token) {
-    //     return next(new Error('Authentication error: No token provided'));
-    // }
-    // jwt.verify(token, YOUR_JWT_SECRET, (err, decoded) => {
-    //     if (err) {
-    //         return next(new Error('Authentication error: Invalid token'));
-    //     }
-    //     socket.user = decoded; // Attach user info to the socket object
-    //     console.log(`Socket authenticated (${socket.id})`);
-    //     next();
-    // });
-
-    next(); // If no authentication needed, skip
-});
-
-// --- Initialize Socket Event Handlers ---
-socketHandler(io); // Dragon Tiger game socket logic
-socketIoController.sendMessageAdmin(io); // Admin messages
-aviatorController.Aviator(io); // Aviator game logic
-
-// --- Cron Jobs ---
-cronJobContronler.cronJobGame1p(io);
-
-// --- Health Check Endpoint ---
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-});
+// --- Health Check Route ---
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 // --- 404 Handler ---
-app.all('*', (req, res) => {
-    return res.status(404).send("404 Not Found");
-});
+app.all('*', (req, res) => res.status(404).send('404 Not Found'));
 
-// --- Start Server with Clustering ---
+// --- Clustering Setup ---
 if (cluster.isMaster) {
-    // Fork workers for each CPU core
+    console.log(`Master ${process.pid} is running`);
+
+    // Fork workers
     for (let i = 0; i < numCPUs; i++) {
-        cluster.fork(); // Create a worker
+        cluster.fork();
     }
 
     cluster.on('exit', (worker, code, signal) => {
         console.log(`Worker ${worker.process.pid} died`);
     });
+
 } else {
-    // Workers can share the same server
+    // Worker processes
+
+    const server = http.createServer(app);
+    const io = new Server(server, {
+        cors: { origin: '*' }
+    });
+
+    // Redis clients for socket.io
+    const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
+    const subClient = pubClient.duplicate();
+
+    io.adapter(createAdapter(pubClient, subClient));
+
+    // Optional Socket Auth
+    io.use((socket, next) => {
+        console.log(`Socket (${socket.id}) connected`);
+        next();
+    });
+
+    // Initialize socket events
+    socketHandler(io);
+    socketIoController.sendMessageAdmin(io);
+    aviatorController.Aviator(io);
+
+    // Start Cron Jobs
+    cronJobContronler.cronJobGame1p(io);
+
     server.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`);
-        console.log("JWT Secret Loaded:", YOUR_JWT_SECRET ? "Yes (First few chars: " + YOUR_JWT_SECRET.substring(0, 5) + "...)" : "NO - Using default!");
+        console.log(`Worker ${process.pid} started server at http://localhost:${port}`);
     });
 }
-
-
-
