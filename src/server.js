@@ -309,9 +309,13 @@ const aviatorController = require('./controllers/aviatorController');
 const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key';
 const port = process.env.PORT || 3000;
 
+// Import sticky-cluster for sticky sessions
+const sticky = require('sticky-cluster');
+
 if (cluster.isPrimary) {
   console.log(`Master ${process.pid} is running`);
 
+  // Fork workers for each CPU core
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
@@ -322,8 +326,8 @@ if (cluster.isPrimary) {
   });
 
 } else {
-  const app = express();
-  const server = http.createServer(app);
+  const app = express();  // Express app
+  const server = http.createServer(app);  // Create HTTP server
   const io = new Server(server, {
     cors: { origin: '*' }
   });
@@ -333,30 +337,37 @@ if (cluster.isPrimary) {
   const subClient = pubClient.duplicate();
   io.adapter(createAdapter(pubClient, subClient));
 
+  // Middleware setup
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Serve static files
   app.use(express.static(path.resolve(__dirname, '../public')));
   app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
+  // Set up view engine and routes
   configViewEngine(app);
   routes.initWebRouter(app);
 
+  // Health check route
   app.get('/health', (req, res) => res.status(200).send('OK'));
   app.all('*', (req, res) => res.status(404).send('404 Not Found'));
 
+  // Socket.IO middleware for connection logging
   io.use((socket, next) => {
     console.log(`Socket (${socket.id}) connected`);
     next();
   });
 
+  // Attach custom socket handlers and game controllers
   socketHandler(io);
   socketIoController.sendMessageAdmin(io);
   aviatorController.Aviator(io);
   cronJobContronler.cronJobGame1p(io);
 
-  server.listen(port, () => {
+  // Use sticky-cluster to ensure WebSocket connections are handled correctly
+  sticky(server).listen(port, () => {
     console.log(`Worker ${process.pid} started at http://localhost:${port}`);
   });
 }
