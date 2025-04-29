@@ -35,7 +35,9 @@ const io = new Server(server, {      // Initialize Socket.IO with options
         // methods: ["GET", "POST"] // Optional: specify allowed methods
     }
 });
-
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 // --- Express Middleware ---
 app.use(cookieParser()); // For parsing cookies if needed by auth/routes
 app.use(express.json()); // For parsing JSON request bodies
