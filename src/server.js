@@ -367,7 +367,9 @@ if (cluster.isPrimary) {
   cronJobContronler.cronJobGame1p(io);
 
   // Start server with sticky-cluster
-  sticky(server).listen(port, () => {
+  sticky(server, {
+    startFn: server.listen.bind(server) // Ensure the server.listen function is correctly passed
+  }).listen(port, () => {
     console.log(`Worker ${process.pid} started at http://localhost:${port}`);
   });
 }
