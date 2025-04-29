@@ -181,6 +181,108 @@
 
 // Load environment variables
 // Load environment variables
+// require('dotenv/config');
+// require('dotenv').config({ path: '../.env' });
+
+// const express = require('express');
+// const http = require('http');
+// const path = require('path');
+// const { Server } = require('socket.io');
+// const jwt = require('jsonwebtoken');
+// const cookieParser = require('cookie-parser');
+
+// // Clustering
+// const cluster = require('cluster');
+// const os = require('os');
+// const numCPUs = os.cpus().length;
+
+// // New Redis Adapter for Socket.IO
+// const { createAdapter } = require('@socket.io/redis-adapter');
+// const { createClient } = require('ioredis');
+
+// // --- Configuration & Route Imports ---
+// const configViewEngine = require('./config/configEngine');
+// const routes = require('./routes/web');
+// const socketHandler = require('../src/public/DragonTiger/assets/socket.io/socket');
+// const cronJobContronler = require('./controllers/cronJobContronler');
+// const socketIoController = require('./controllers/socketIoController');
+// const aviatorController = require('./controllers/aviatorController');
+
+// // --- Constants ---
+// const YOUR_JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret_key';
+// const port = process.env.PORT || 3000;
+
+// // --- Express Initialization ---
+// const app = express();
+
+// // --- Middleware ---
+// app.use(cookieParser());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+// // --- Static Folders ---
+// app.use(express.static(path.resolve(__dirname, '../public')));
+// app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+
+// // --- View Engine ---
+// configViewEngine(app);
+
+// // --- Routes ---
+// routes.initWebRouter(app);
+
+// // --- Health Check Route ---
+// app.get('/health', (req, res) => res.status(200).send('OK'));
+
+// // --- 404 Handler ---
+// app.all('*', (req, res) => res.status(404).send('404 Not Found'));
+
+// // --- Clustering Setup ---
+// if (cluster.isMaster) {
+//     console.log(`Master ${process.pid} is running`);
+
+//     // Fork workers
+//     for (let i = 0; i < numCPUs; i++) {
+//         cluster.fork();
+//     }
+
+//     cluster.on('exit', (worker, code, signal) => {
+//         console.log(`Worker ${worker.process.pid} died`);
+//     });
+
+// } else {
+//     // Worker processes
+
+//     const server = http.createServer(app);
+//     const io = new Server(server, {
+//         cors: { origin: '*' }
+//     });
+
+//     // Redis clients for socket.io
+//     const pubClient = createClient({ host: '127.0.0.1', port: 6379 });
+//     const subClient = pubClient.duplicate();
+
+//     io.adapter(createAdapter(pubClient, subClient));
+
+//     // Optional Socket Auth
+//     io.use((socket, next) => {
+//         console.log(`Socket (${socket.id}) connected`);
+//         next();
+//     });
+
+//     // Initialize socket events
+//     socketHandler(io);
+//     socketIoController.sendMessageAdmin(io);
+//     aviatorController.Aviator(io);
+
+//     // Start Cron Jobs
+//     cronJobContronler.cronJobGame1p(io);
+
+//     server.listen(port, () => {
+//         console.log(`Worker ${process.pid} started server at http://localhost:${port}`);
+//     });
+// }
+
+
 require('dotenv/config');
 require('dotenv').config({ path: '../.env' });
 
@@ -199,6 +301,9 @@ const numCPUs = os.cpus().length;
 // New Redis Adapter for Socket.IO
 const { createAdapter } = require('@socket.io/redis-adapter');
 const { createClient } = require('ioredis');
+
+// Sticky clustering
+const sticky = require('sticky-cluster');
 
 // --- Configuration & Route Imports ---
 const configViewEngine = require('./config/configEngine');
@@ -251,7 +356,7 @@ if (cluster.isMaster) {
 
 } else {
     // Worker processes
-
+    
     const server = http.createServer(app);
     const io = new Server(server, {
         cors: { origin: '*' }
@@ -277,7 +382,9 @@ if (cluster.isMaster) {
     // Start Cron Jobs
     cronJobContronler.cronJobGame1p(io);
 
-    server.listen(port, () => {
+    // Use sticky clustering with the app and server.listen()
+    sticky(server).listen(port, () => {
         console.log(`Worker ${process.pid} started server at http://localhost:${port}`);
     });
 }
+
