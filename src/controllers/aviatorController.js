@@ -338,8 +338,8 @@ const Aviator = async (io) => {
 
     socket.on('cashout', (msg, callback) => {
       if (!(betArray.length <= 5 && totalAmount <= 300 || betArray.length === 1) && amountToDistribute < parseInt(msg.bet_amount) * msg.crashOut) {
-        handleCrash(current_Value);
-        clearInterval(multiplierInterval);
+        // handleCrash(current_Value);
+        // clearInterval(multiplierInterval);
         callback({status:false})
       } else {
         pool = pool - parseInt(msg.bet_amount)*msg.crashOut;
