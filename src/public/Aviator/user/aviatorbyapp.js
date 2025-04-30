@@ -3,7 +3,7 @@ const socket = io();
 var increamtsappgame;
 
 socket.on('connect', () => {
-    console.log('Connected to server');
+    console.log('Connected to serverdfghjkldfghjkl;sdfghjkl');
 });
 
 function gameover(lastint) {
@@ -196,7 +196,7 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     let speed = 0.01;
     let timeout = 5000;
     let timeout2 = 1000;
-    let xyz= 10000000000;
+    let xyz= 1000;
     let msg;
     // if (isflying) {
     //     a = current_Value;
@@ -204,6 +204,22 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     //     timeout2 = 0;
     //     speed = current_speed;
     // }
+
+    socket.emit("crashvalue")
+
+    socket.on("crashv",(msgx)=>{
+        console.log(msgx,"fghjhkghjkg")
+        msg = msgx
+        xyz = msgx.crash
+    })
+    
+
+    // socket.on("crashv",(msgx)=>{
+    //     console.log(msgx,"fghjhkghjkg")
+    //     msg = msgx
+    //     xyz = msgx.crash
+    // })
+    
 
     $("#auto_increment_number_div").hide();
     $('.loading-game').addClass('show');
@@ -326,11 +342,7 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
         // Simulate incrementor behavior with random game data
         
         // let msg = 1000
-        socket.on("crashv",(msgx)=>{
-            console.log(msgx,"fghjhkghjkg")
-            msg = msgx
-            xyz = msgx.crash
-        })
+        
 
         socket.on("crashv1",(msgxx)=>{
             clearInterval(increamtsappgame);
@@ -399,6 +411,9 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                         }
                     });
                 }, 500);
+
+
+                // socket.emit("crashed",{val:a})
         
                 // Restart the game cycle after a brief delay
                 setTimeout(() => {
