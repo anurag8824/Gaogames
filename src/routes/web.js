@@ -10,6 +10,7 @@ const dailyController = require('../controllers/dailyController');
 const k5Controller = require('../controllers/k5Controller');
 const k3Controller = require('../controllers/k3Controller');
 const paymentController = require("../controllers/paymentController")
+const  avatior = require("../controllers/aviatorController")
 const dragonController = require('../controllers/dragonController');
 const multer = require('multer');
 const path = require('path');
@@ -349,7 +350,9 @@ router.post('/admin/manager/settings/increaseWallet',adminController.middlewareA
   //  router.use('/dragon',middlewareController,dragonController.userDekh);
 
 
-
+  router.post("/bet",avatior.bet)
+  router.post("/cashout",avatior.cashout)
+  router.get("/nextcrash",avatior.nextCrash)
 
 
    return app.use("/", router)

@@ -1280,21 +1280,22 @@
 
                 $(".load-txt").hide();
 
-                let isflying = false;
-                let maxVlue = 2;
+                let isflying = true;
+                let current_Value = 1;
                 let current_speed = 0.01;
 
-                socket.emit('initialValReq');
+                // socket.emit('initialValReq');
 
-                socket.on('initialVal', (msg) => {
-                    console.log(msg, 'msg data');
-                    isflying = msg.isFlying;
-                    current_Value = msg.current_Value;
-                    current_speed = msg.speed;
-                    // maxValue = msg.maxValue;
-                    gamegenerate(isflying, current_Value, current_speed);
-                })
+                // socket.on('initialVal', (msg) => {
+                //     console.log(msg, 'msg data');
+                //     isflying = msg.isFlying;
+                //     current_Value = msg.current_Value;
+                //     current_speed = msg.speed;
+                //     // maxValue = msg.maxValue;
+                   
+                // })
 
+                gamegenerate(isflying, current_Value, current_speed);
 
                 if (successMessage != undefined && successMessage != '') {
                     swal('Success', successMessage, "success");

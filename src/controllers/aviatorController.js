@@ -1,17 +1,17 @@
 const connection = require("../config/connectDB");
 
-const Aviator = async (io) => {
+// const Aviator = async (io) => {
   let current_Value = 1.00;
   let speed = 0.5;
   let isFlying = true;
   let multiplierInterval;
   let betArray = [];
   
-  let [poolValue] = await connection.execute('SELECT total_pool FROM admin');
-  let [periodData] = await connection.execute('SELECT id FROM aviator WHERE status = 0');
-  let currentPeriod = periodData[0]?.id;
-  let pool = parseFloat(poolValue[0]?.total_pool);
-  let flagPool = pool;
+  // let [poolValue] = await connection.execute('SELECT total_pool FROM admin');
+  // let [periodData] = await connection.execute('SELECT id FROM aviator WHERE status = 0');
+  // let currentPeriod = periodData[0]?.id;
+  // let pool = parseFloat(poolValue[0]?.total_pool);
+  // let flagPool = pool;
   let crashValue = 20;
   let amountToDistribute = 0;
   let totalAmount;
@@ -248,8 +248,8 @@ const Aviator = async (io) => {
     await connection.execute('UPDATE users SET win_wallet = win_wallet + ? WHERE phone = ?',[parseInt(msg.bet_amount)*msg.crashOut,msg.phone]);
   }
 
-  io.on('connection', (socket) => {
-    console.log('A user connected');
+  // io.on('connection', (socket) => {
+  //   console.log('A user connected');
 
 
     // socket.on('initialValReq', () => {
@@ -279,113 +279,164 @@ const Aviator = async (io) => {
     // })
 
 
-    socket.on("crashvalue",async (msg) =>{
-      // console.log("crashvaluue fired asdghjkl;asdfghjkldfghjkl")
+    // socket.on("crashvalue",async (msg) =>{
+    //   // console.log("crashvaluue fired asdghjkl;asdfghjkldfghjkl")
 
-      if (betArray.length > 0) {
-        await insertBetResults();
-      }
-      betArray = [];
+    //   if (betArray.length > 0) {
+    //     await insertBetResults();
+    //   }
+    //   betArray = [];
 
-      const [result] = await connection.execute('select aviator from admin');
-      let adminValue = result[0].aviator;
-      if(adminValue != 0){
-        console.log("ghjkgghjklfghjkvghjk","adminvalue  0")
-        crashValue = parseFloat(adminValue);
-        socket.emit("crashv",{crash:crashValue,period:currentPeriod});
+      // const [result] = await connection.execute('select aviator from admin');
+      // let adminValue = result[0].aviator;
+      // if(adminValue != 0){
+      //   console.log("ghjkgghjklfghjkvghjk","adminvalue  0")
+      //   crashValue = parseFloat(adminValue);
+      //   socket.emit("crashv",{crash:crashValue,period:currentPeriod});
 
-      }
-      else{
-        crashValue = parseFloat((Math.random() * 10).toFixed(2));
-        console.log(crashValue,"GHJIOHUIJGHJHKTYGUHIJLOTYGUHIJOXTYJGUKHILJO:")
-        socket.emit('crashv',{crash:crashValue,period:currentPeriod})
-      }
+      // }
+      // else{
+      //   crashValue = parseFloat((Math.random() * 10).toFixed(2));
+      //   console.log(crashValue,"GHJIOHUIJGHJHKTYGUHIJLOTYGUHIJOXTYJGUKHILJO:")
+      //   socket.emit('crashv',{crash:crashValue,period:currentPeriod})
+      // }
 
-    })
+    // })
 
-    socket.on('bet', async (msg, callback) => {
-      console.log('bet',msg)
-
-      const totalBet = parseFloat(msg.reduce((acc, bet) => acc + parseFloat(bet.bet_amount), 0)/2);
-        
-        let data = [];
-    
-        for (const [index, val] of msg.entries()) {
-            let data1 = await reduceWallet(parseInt(val.bet_amount), val.phone,totalBet);
-            
-            if (data1.status === false) {
-                data.push(data1);
-                // msg.splice(index, 1);
-                break;
-
-
-            } 
-            else{
-              console.log('hello at bet')
-              pool = pool + parseFloat(val.bet_amount)/2;
-              data.push(data1);
-              betArray.push(val);
-            }
-           
-               
-        }
-        // const pooltoAdd = parseFloat(msg.reduce((acc, bet) => acc + parseFloat(bet.bet_amount), 0)/2);
-       
-      
-        callback(data);
-    });
-    
-
-    socket.on('cashout', (msg, callback) => {
-      if (!(betArray.length <= 5 && totalAmount <= 300 || betArray.length === 1) && amountToDistribute < parseInt(msg.bet_amount) * msg.crashOut) {
-        handleCrash(current_Value);
-        clearInterval(multiplierInterval);
-        callback({status:false})
-      } else {
-        pool = pool - parseInt(msg.bet_amount)*msg.crashOut;
-        updateBetStatus(msg);
-        io.emit('cashoutNew',parseInt(msg.bet_amount)*msg.crashOut)
-        callback(true);
-      }
-      
-    });
-
-    socket.on('getBetHistory',async (msg,callback)=>{
-      console.log(msg.phone,msg.period,"ghjkbhjkbvnmbm")
-      const [betHistory] = await connection.execute(
-        `SELECT ar.*, a.*, 
-                DATE_FORMAT(ar.time, '%Y-%m-%d %H:%i:%s') AS formatted_time
-         FROM aviator_result ar
-         JOIN aviator a ON ar.period = a.id
-         WHERE ar.phone = ? AND ar.period = ?
-         ORDER BY ar.period DESC`,  // Reverse order by period
-        [msg.phone,msg.period]
-      );
-      callback(betHistory);
-    })
-
-    socket.on('betData', (callback) => { 
-
-      callback(betArray);
-  });
-
-  socket.on('crashNow',(callback)=>{
-     if(isFlying){
-      // handleCrash(current_Value);
-      io.emit("crashv1",{period:currentPeriod})
-      clearInterval(multiplierInterval);
-      callback(true)
-     }
-     else{
-        callback(false);
-     }
-  })
+   const bet = async (req, res) => {
+      try {
+          const msg = req.body; // Expecting array of bets
+          console.log('bet', msg);
   
+          const totalBet = parseFloat(
+              msg.reduce((acc, bet) => acc + parseFloat(bet.bet_amount), 0) / 2
+          );
+  
+          let data = [];
+  
+          for (const val of msg) {
+              let data1 = await reduceWallet(
+                  parseInt(val.bet_amount),
+                  val.phone,
+                  totalBet
+              );
+  
+              if (data1.status === false) {
+                  data.push(data1);
+                  break;
+              } else {
+                  console.log('hello at bet');
+                  // pool += parseFloat(val.bet_amount) / 2;
+                  data.push(data1);
+                  betArray.push(val); // You must declare betArray globally for this to work
+              }
+          }
+  
+          res.json(data);
+      } catch (error) {
+          console.error('Error in /bet:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+      }
+  };
 
-    socket.on('disconnect', () => {
-      console.log('A user disconnected');
-    });
-  });
+
+  const nextCrash = async (req, res) => {
+    try {
+        const [result] = await connection.execute('SELECT aviator FROM admin');
+        let adminValue = result[0]?.aviator;
+
+        let crashValue;
+        if (adminValue != 0) {
+            console.log("Admin-defined crash value:", adminValue);
+            crashValue = parseFloat(adminValue);
+        } else {
+            crashValue = parseFloat((Math.random() * 20).toFixed(2));
+            console.log("Random crash value:", crashValue);
+        }
+
+        res.json(crashValue);
+    } catch (error) {
+        console.error("Error in nextCrash:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
-module.exports = { Aviator };
+    
+
+    // socket.on('cashout', (msg, callback) => {
+    //   if (!(betArray.length <= 5 && totalAmount <= 300 || betArray.length === 1) && amountToDistribute < parseInt(msg.bet_amount) * msg.crashOut) {
+    //     handleCrash(current_Value);
+    //     clearInterval(multiplierInterval);
+    //     callback({status:false})
+    //   } else {
+    //     pool = pool - parseInt(msg.bet_amount)*msg.crashOut;
+    //     updateBetStatus(msg);
+    //     io.emit('cashoutNew',parseInt(msg.bet_amount)*msg.crashOut)
+    //     callback(true);
+    //   }
+      
+    // });
+ const cashout = async (req, res) => {
+      const msg = req.body;
+  
+      try {
+          const totalBetsValid = betArray.length <= 5 && totalAmount <= 300;
+          const singleBetValid = betArray.length === 1;
+          const payoutAmount = parseInt(msg.bet_amount) * msg.crashOut;
+  
+          // if (!(totalBetsValid || singleBetValid) && amountToDistribute < payoutAmount) {
+          //     // handleCrash(current_Value);
+          //     // clearInterval(multiplierInterval);
+          //     return res.status(400).json({ status: false });
+          // }
+  
+          // pool = pool - payoutAmount;
+          updateBetStatus(msg); // mark the bet as cashed out
+          // io.emit('cashoutNew', payoutAmount); // broadcast update to all clients
+  
+          return res.json({ status: true });
+      } catch (error) {
+          console.error('Cashout error:', error);
+          return res.status(500).json({ status: false, error: 'Internal server error' });
+      }
+  };
+
+    // socket.on('getBetHistory',async (msg,callback)=>{
+    //   console.log(msg.phone,msg.period,"ghjkbhjkbvnmbm")
+    //   const [betHistory] = await connection.execute(
+    //     `SELECT ar.*, a.*, 
+    //             DATE_FORMAT(ar.time, '%Y-%m-%d %H:%i:%s') AS formatted_time
+    //      FROM aviator_result ar
+    //      JOIN aviator a ON ar.period = a.id
+    //      WHERE ar.phone = ? AND ar.period = ?
+    //      ORDER BY ar.period DESC`,  // Reverse order by period
+    //     [msg.phone,msg.period]
+    //   );
+    //   callback(betHistory);
+    // })
+
+  //   socket.on('betData', (callback) => { 
+
+  //     callback(betArray);
+  // });
+
+  // socket.on('crashNow',(callback)=>{
+  //    if(isFlying){
+  //     // handleCrash(current_Value);
+  //     io.emit("crashv1",{period:currentPeriod})
+  //     clearInterval(multiplierInterval);
+  //     callback(true)
+  //    }
+  //    else{
+  //       callback(false);
+  //    }
+  // })
+  
+
+    // socket.on('disconnect', () => {
+    //   console.log('A user disconnected');
+    // });
+  // });
+// };
+
+module.exports = { bet, cashout,nextCrash };

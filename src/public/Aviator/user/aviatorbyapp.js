@@ -1,10 +1,10 @@
-const socket = io();
+// const socket = io();
 
 var increamtsappgame;
 
-socket.on('connect', () => {
-    console.log('Connected to serverdfghjkldfghjkl;sdfghjkl');
-});
+// socket.on('connect', () => {
+//     console.log('Connected to serverdfghjkldfghjkl;sdfghjkl');
+// });
 
 function gameover(lastint) {
 
@@ -191,12 +191,13 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
         image: getRandomItem(avatars)
     }));
 
+
     crash = 0;
     let a = 1.0;
     let speed = 0.01;
     let timeout = 5000;
     let timeout2 = 1000;
-    let xyz= 1000;
+    let xyz= 10;
     let msg;
     // if (isflying) {
     //     a = current_Value;
@@ -205,13 +206,13 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     //     speed = current_speed;
     // }
 
-    socket.emit("crashvalue")
+    // socket.emit("crashvalue")
 
-    socket.on("crashv",(msgx)=>{
-        console.log(msgx,"fghjhkghjkg")
-        msg = msgx
-        xyz = msgx.crash
-    })
+    // socket.on("crashv",(msgx)=>{
+    //     console.log(msgx,"fghjhkghjkg")
+    //     msg = msgx
+    //     xyz = msgx.crash
+    // })
     
 
     // socket.on("crashv",(msgx)=>{
@@ -219,6 +220,27 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
     //     msg = msgx
     //     xyz = msgx.crash
     // })
+
+const nextcrash = async () => {
+        try {
+            const response = await $.ajax({
+                url: '/nextcrash', // Adjust the endpoint as per your backend route
+                method: 'GET',
+                dataType: 'json'
+            });
+    
+            console.log("Next Crash Value:", response);
+            // return response;
+            xyz = response
+        } catch (error) {
+            console.error("Error fetching next crash value:", error);
+            return null;
+        }
+};
+
+nextcrash();
+    
+
     
 
     $("#auto_increment_number_div").hide();
@@ -344,13 +366,13 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
         // let msg = 1000
         
 
-        socket.on("crashv1",(msgxx)=>{
-            clearInterval(increamtsappgame);
-        let abc = {crash:a,period:msgxx.period}
-        handleCrash(abc)
+        // socket.on("crashv1",(msgxx)=>{
+        //     clearInterval(increamtsappgame);
+        // let abc = {crash:a,period:msgxx.period}
+        // handleCrash(abc)
 
 
-        })
+        // })
 
         function handleCrash(msg) {
             crash = 1;
@@ -365,9 +387,13 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                 console.log("Crash match detected!");
                 
                 // Call functions that handle the game over and update the UI
-                gameover(msg.crash);
-                crash_plane(parseFloat(msg.crash.toFixed(2)));
-                incrementor(parseFloat(msg.crash.toFixed(2)));
+                // gameover(msg.crash);
+                // crash_plane(parseFloat(msg.crash.toFixed(2)));
+                // incrementor(parseFloat(msg.crash.toFixed(2)));
+
+                gameover(xyz);
+                crash_plane(parseFloat(xyz.toFixed(2)));
+                incrementor(parseFloat(xyz.toFixed(2)));
         
                 // Clear the bets container
                 $("#all_bets .mCSB_container").empty();
@@ -379,38 +405,38 @@ function gamegenerate(isflying, current_Value = 1.0, current_speed = 0.01) {
                 // let betHistory = generateRandomBetHistory();
         
                 // Fetch and display the bet history after a short delay
-                setTimeout(() => {
-                    socket.emit('getBetHistory', { phone, period: msg.period }, (betHistory) => {
-                        if (betHistory && betHistory.length > 0) {
-                            // Prepend bet history to the list
-                            betHistory.forEach((bet) => {
-                                console.log(bet, 'at crash');
-                                $("#my_bet_list").prepend(`
-                                    <div class="list-items">
-                                        <div class="column-1 users fw-normal">
-                                            ${bet.formatted_time}
-                                        </div>
-                                        <div class="column-2">
-                                            <button class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
-                                                ${bet.amount}₹
-                                            </button>
-                                        </div>
-                                        <div class="column-3">
-                                            <div class="bg3 custom-badge mx-auto">
-                                                ${parseFloat(bet.crash) > 1 ? bet.crash : bet.result}x
-                                            </div>
-                                        </div>
-                                        <div class="column-4 fw-normal">
-                                            ${parseFloat(bet.crash) > 1 ? (parseFloat(bet.crash) * bet.amount) + '₹' : ''}
-                                        </div>
-                                    </div>
-                                `);
-                            });
-                        } else {
-                            console.error('No bet history received');
-                        }
-                    });
-                }, 500);
+                // setTimeout(() => {
+                //     socket.emit('getBetHistory', { phone, period: msg.period }, (betHistory) => {
+                //         if (betHistory && betHistory.length > 0) {
+                //             // Prepend bet history to the list
+                //             betHistory.forEach((bet) => {
+                //                 console.log(bet, 'at crash');
+                //                 $("#my_bet_list").prepend(`
+                //                     <div class="list-items">
+                //                         <div class="column-1 users fw-normal">
+                //                             ${bet.formatted_time}
+                //                         </div>
+                //                         <div class="column-2">
+                //                             <button class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
+                //                                 ${bet.amount}₹
+                //                             </button>
+                //                         </div>
+                //                         <div class="column-3">
+                //                             <div class="bg3 custom-badge mx-auto">
+                //                                 ${parseFloat(bet.crash) > 1 ? bet.crash : bet.result}x
+                //                             </div>
+                //                         </div>
+                //                         <div class="column-4 fw-normal">
+                //                             ${parseFloat(bet.crash) > 1 ? (parseFloat(bet.crash) * bet.amount) + '₹' : ''}
+                //                         </div>
+                //                     </div>
+                //                 `);
+                //             });
+                //         } else {
+                //             console.error('No bet history received');
+                //         }
+                //     });
+                // }, 500);
 
 
                 // socket.emit("crashed",{val:a})
