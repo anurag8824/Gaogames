@@ -344,21 +344,16 @@
                   data: { value },
                   success: (response) => {
                    if(response.status){
-                    socket.emit("crashNow",(res)=>{
-                      if(res){
+                    
                         Swal.fire(
                             'Good job!',
                             'You clicked the button!',
                             'success'
                         );
-                      }
-                      else{
-                        Swal.fire({
-                            icon: 'error',
-                            title: response.message,
-                        });
-                      }
-                    })
+                    
+                     
+                       
+                  
                     
                    }
                    else{
