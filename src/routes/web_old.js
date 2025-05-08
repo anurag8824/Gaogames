@@ -62,6 +62,8 @@ const initWebRouter = (app) => {
     router.get('/win/3', middlewareController, winGoController.winGoPage3);
     router.get('/win/5', middlewareController, winGoController.winGoPage5);
     router.get('/win/10', middlewareController, winGoController.winGoPage10);
+    router.get('/win/q-xray',middlewareController,winGoController.winGopage10);
+    router.post("/win/jkl",middlewareController,winGocon`)
 
     // BET K5D
     router.get('/5d', middlewareController, k5Controller.K5DPage);
