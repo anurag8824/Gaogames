@@ -206,7 +206,7 @@
                 </span> on
             </h2>
             <div>
-                <img src="/images/banners/qrth.jpeg" alt="QR Img" style="width: 80%;
+                <img src="/uploads/qrImg.png" alt="QR Img" style="width: 80%;
                 margin: 20px auto;
                 display: block;">
             </div>
@@ -229,7 +229,7 @@
 
         <form class="verification_form__root" action="submit.php" method="post">
             <label for="upi_ref_no">UPI Ref. No.</label>
-            <input type="text" id="upi_ref_no" name="upi_ref_no" required placeholder="Enter Your UTR here..." />
+            <input type="text" id="upi_ref_no" name="upi_ref_no" maxlength="12"  required placeholder="Enter Your UTR here..." />
             <button id="submit_button" type="submit">Submit</button>
         </form>
 
